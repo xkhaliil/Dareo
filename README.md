@@ -54,6 +54,113 @@ Complete a dare  →  Earn XP  →  Level Up  →  Unlock new Rank  →  Climb t
 
 ---
 
+## 🗂️ Data Model
+
+```mermaid
+classDiagram
+    class User {
+        String id
+        String email
+        String username
+        String password
+        String avatarUrl
+        Int xp
+        Int level
+        Rank rank
+        DateTime createdAt
+        DateTime updatedAt
+    }
+
+    class Group {
+        String id
+        String name
+        String code
+        String avatarUrl
+        DateTime createdAt
+        DateTime updatedAt
+    }
+
+    class GroupMember {
+        String id
+        Role role
+        DateTime joinedAt
+    }
+
+    class Dare {
+        String id
+        String title
+        String description
+        Int xpReward
+        Difficulty difficulty
+        DateTime createdAt
+        DateTime expiresAt
+    }
+
+    class DareResponse {
+        String id
+        ResponseStatus status
+        String proofUrl
+        DateTime completedAt
+        DateTime createdAt
+    }
+
+    class Rank {
+        <<enumeration>>
+        ROOKIE
+        BRONZE
+        SILVER
+        GOLD
+        PLATINUM
+        DIAMOND
+        LEGEND
+    }
+
+    class Role {
+        <<enumeration>>
+        OWNER
+        ADMIN
+        MEMBER
+    }
+
+    class Difficulty {
+        <<enumeration>>
+        EASY
+        MEDIUM
+        HARD
+        EXTREME
+    }
+
+    class ResponseStatus {
+        <<enumeration>>
+        PENDING
+        COMPLETED
+        FAILED
+        DECLINED
+    }
+
+    User "1" --> "*" GroupMember : memberships
+    Group "1" --> "*" GroupMember : members
+    GroupMember --> User : user
+    GroupMember --> Group : group
+
+    User "1" --> "*" Dare : daresCreated
+    Group "1" --> "*" Dare : dares
+    Dare --> User : author
+    Dare --> Group : group
+
+    User "1" --> "*" DareResponse : dareResponses
+    Dare "1" --> "*" DareResponse : responses
+    DareResponse --> User : user
+    DareResponse --> Dare : dare
+
+    User --> Rank : rank
+    GroupMember --> Role : role
+    Dare --> Difficulty : difficulty
+    DareResponse --> ResponseStatus : status
+```
+
+---
+
 ## 🛠️ Tech Stack
 
 | Layer | Technology |

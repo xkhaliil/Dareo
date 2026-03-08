@@ -1,0 +1,132 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+}
+
+// ─── Users ───────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  username  String   @unique
+  password  String
+  avatarUrl String?
+  xp        Int      @default(0)
+  level     Int      @default(1)
+  rank      Rank     @default(ROOKIE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  memberships   GroupMember[]
+  daresCreated  Dare[]         @relation("DareAuthor")
+  dareResponses DareResponse[]
+}
+
+// ─── Groups (squads) ─────────────────────────────────────
+
+model Group {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  code      String   @unique
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  members GroupMember[]
+  dares   Dare[]
+}
+
+model GroupMember {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  role     Role   @default(MEMBER)
+  joinedAt DateTime @default(now())
+
+  userId  String @db.ObjectId
+  user    User   @relation(fields: [userId], references: [id])
+  groupId String @db.ObjectId
+  group   Group  @relation(fields: [groupId], references: [id])
+
+  @@unique([userId, groupId])
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+// ─── Dares ───────────────────────────────────────────────
+
+model Dare {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  xpReward    Int        @default(10)
+  difficulty  Difficulty @default(EASY)
+  createdAt   DateTime   @default(now())
+  expiresAt   DateTime?
+
+  // Who created it & in which group
+  authorId String @db.ObjectId
+  author   User   @relation("DareAuthor", fields: [authorId], references: [id])
+  groupId  String @db.ObjectId
+  group    Group  @relation(fields: [groupId], references: [id])
+
+  // Relations
+  responses DareResponse[]
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+  EXTREME
+}
+
+// ─── Dare Responses ──────────────────────────────────────
+
+model DareResponse {
+  id          String         @id @default(auto()) @map("_id") @db.ObjectId
+  status      ResponseStatus @default(PENDING)
+  proofUrl    String?
+  completedAt DateTime?
+  createdAt   DateTime       @default(now())
+
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+  dareId String @db.ObjectId
+  dare   Dare   @relation(fields: [dareId], references: [id])
+
+  @@unique([userId, dareId])
+}
+
+enum ResponseStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  DECLINED
+}
+
+// ─── Ranks ───────────────────────────────────────────────
+
+enum Rank {
+  ROOKIE
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+  DIAMOND
+  LEGEND
+}
