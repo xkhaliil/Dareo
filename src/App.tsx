@@ -1,11 +1,20 @@
 import "./App.css";
 
+import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Users, Trophy, Zap, ArrowRight, Dice5 } from "lucide-react";
+import { useAuth } from "@/context/auth-context";
+import Navbar from "@/components/navbar";
 
 function App() {
+  const { isAuthenticated } = useAuth();
+
+  if (isAuthenticated) {
+    return <Navigate to="/game" replace />;
+  }
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* ===== BACKGROUND EFFECTS ===== */}
@@ -18,17 +27,7 @@ function App() {
       </div>
 
       {/* ===== NAVBAR ===== */}
-      <nav className="relative z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
-        <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Dice5 className="size-5 text-primary" />
-            <span className="text-lg font-bold tracking-tight">Dareo</span>
-          </div>
-          <Button size="sm" className="cursor-pointer">
-            Launch App
-          </Button>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* ===== HERO ===== */}
       <main className="relative z-10 flex-1 flex items-center justify-center px-6">
@@ -62,10 +61,12 @@ function App() {
 
           {/* CTA */}
           <div className="flex gap-3 justify-center animate-fade-in-delay-3">
-            <Button size="lg" className="gap-2 text-base px-8 cursor-pointer">
-              Start Playing
-              <ArrowRight className="size-4" />
-            </Button>
+            <Link to="/sign-up">
+              <Button size="lg" className="gap-2 text-base px-8 cursor-pointer">
+                Start Playing
+                <ArrowRight className="size-4" />
+              </Button>
+            </Link>
           </div>
         </div>
       </main>
