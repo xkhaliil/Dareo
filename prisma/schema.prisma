@@ -10,13 +10,13 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
 }
 
 // ─── Users ───────────────────────────────────────────────
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(uuid())
   email     String   @unique
   username  String   @unique
   password  String
@@ -36,7 +36,7 @@ model User {
 // ─── Groups (squads) ─────────────────────────────────────
 
 model Group {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(uuid())
   name      String
   code      String   @unique
   avatarUrl String?
@@ -49,13 +49,13 @@ model Group {
 }
 
 model GroupMember {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  id       String @id @default(uuid())
   role     Role   @default(MEMBER)
   joinedAt DateTime @default(now())
 
-  userId  String @db.ObjectId
+  userId  String
   user    User   @relation(fields: [userId], references: [id])
-  groupId String @db.ObjectId
+  groupId String
   group   Group  @relation(fields: [groupId], references: [id])
 
   @@unique([userId, groupId])
@@ -70,7 +70,7 @@ enum Role {
 // ─── Dares ───────────────────────────────────────────────
 
 model Dare {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  id          String     @id @default(uuid())
   title       String
   description String
   xpReward    Int        @default(10)
@@ -79,9 +79,9 @@ model Dare {
   expiresAt   DateTime?
 
   // Who created it & in which group
-  authorId String @db.ObjectId
+  authorId String
   author   User   @relation("DareAuthor", fields: [authorId], references: [id])
-  groupId  String @db.ObjectId
+  groupId  String
   group    Group  @relation(fields: [groupId], references: [id])
 
   // Relations
@@ -98,15 +98,15 @@ enum Difficulty {
 // ─── Dare Responses ──────────────────────────────────────
 
 model DareResponse {
-  id          String         @id @default(auto()) @map("_id") @db.ObjectId
+  id          String         @id @default(uuid())
   status      ResponseStatus @default(PENDING)
   proofUrl    String?
   completedAt DateTime?
   createdAt   DateTime       @default(now())
 
-  userId String @db.ObjectId
+  userId String
   user   User   @relation(fields: [userId], references: [id])
-  dareId String @db.ObjectId
+  dareId String
   dare   Dare   @relation(fields: [dareId], references: [id])
 
   @@unique([userId, dareId])
