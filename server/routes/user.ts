@@ -19,7 +19,7 @@ function authenticate(req: AuthRequest, res: Response, next: NextFunction) {
   }
 
   try {
-    const payload = jwt.verify(header.slice(7), JWT_SECRET) as { userId: string };
+    const payload = jwt.verify(header.slice(7), JWT_SECRET!) as { userId: string };
     req.userId = payload.userId;
     next();
   } catch {

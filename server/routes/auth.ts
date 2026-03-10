@@ -38,7 +38,7 @@ router.post("/sign-up", async (req: Request, res: Response) => {
       },
     });
 
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
+    const token = jwt.sign({ userId: user.id }, JWT_SECRET!, {
       expiresIn: "7d",
     });
 
@@ -85,7 +85,7 @@ router.post("/sign-in", async (req: Request, res: Response) => {
       return;
     }
 
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
+    const token = jwt.sign({ userId: user.id }, JWT_SECRET!, {
       expiresIn: "7d",
     });
 
