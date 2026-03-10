@@ -7,6 +7,7 @@ import App from './App.tsx'
 import SignInPage from './pages/sign-in.tsx'
 import SignUpPage from './pages/sign-up.tsx'
 import GamePage from './pages/game.tsx'
+import GroupPage from './pages/group.tsx'
 import ProfilePage from './pages/profile.tsx'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -24,6 +25,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/sign-in" element={<SignInPage />} />
           <Route path="/sign-up" element={<SignUpPage />} />
           <Route path="/game" element={<ProtectedRoute><GamePage /></ProtectedRoute>} />
+          <Route path="/group/:id" element={<ProtectedRoute><GroupPage /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         </Routes>
       </AuthProvider>

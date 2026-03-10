@@ -30,6 +30,7 @@ model User {
   // Relations
   memberships   GroupMember[]
   daresCreated  Dare[]         @relation("DareAuthor")
+  daresAssigned Dare[]         @relation("DareAssignee")
   dareResponses DareResponse[]
 }
 
@@ -75,14 +76,20 @@ model Dare {
   description String
   xpReward    Int        @default(10)
   difficulty  Difficulty @default(EASY)
+  status      DareStatus @default(OPEN)
   createdAt   DateTime   @default(now())
   expiresAt   DateTime?
+  completedAt DateTime?
 
   // Who created it & in which group
   authorId String
   author   User   @relation("DareAuthor", fields: [authorId], references: [id])
   groupId  String
   group    Group  @relation(fields: [groupId], references: [id])
+
+  // Who it's assigned to
+  assignedToId String?
+  assignedTo   User?  @relation("DareAssignee", fields: [assignedToId], references: [id])
 
   // Relations
   responses DareResponse[]
@@ -93,6 +100,13 @@ enum Difficulty {
   MEDIUM
   HARD
   EXTREME
+}
+
+enum DareStatus {
+  OPEN
+  COMPLETED
+  PASSED
+  FAILED
 }
 
 // ─── Dare Responses ──────────────────────────────────────
