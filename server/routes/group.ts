@@ -6,7 +6,7 @@ import { computeLevel, computeRank } from "../../src/lib/xp.js";
 import type { Rank } from "../../generated/prisma/enums.js";
 
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET ?? "dareo-dev-secret-change-me";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // ─── XP helper ───────────────────────────────────────────
 

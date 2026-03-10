@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import prisma from "../db.js";
 
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET ?? "dareo-dev-secret-change-me";
+const JWT_SECRET = process.env.JWT_SECRET ;
 
 // ─── Sign Up ─────────────────────────────────────────────
 
