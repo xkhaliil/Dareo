@@ -594,7 +594,7 @@ export default function GroupPage() {
                                     </Button>
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent align="end" className="w-40">
-                                    {isAssignee && (
+                                    {(isAuthor || isAssignee) && (
                                       <>
                                         <DropdownMenuItem
                                           className="gap-2 cursor-pointer text-green-400 focus:text-green-400"

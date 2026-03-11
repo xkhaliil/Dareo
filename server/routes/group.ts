@@ -428,9 +428,9 @@ router.patch("/:id/dares/:dareId/complete", authenticate, async (req: AuthReques
       return;
     }
 
-    // Only the assigned user can change the status
-    if (dare.assignedToId !== req.userId) {
-      res.status(403).json({ error: "Only the assigned user can change the dare status" });
+    // Only the author or the assigned user can change the status
+    if (dare.authorId !== req.userId && dare.assignedToId !== req.userId) {
+      res.status(403).json({ error: "Only the dare creator or assigned user can change the status" });
       return;
     }
 
