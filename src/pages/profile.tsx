@@ -22,6 +22,7 @@ import {
   Check,
 } from "lucide-react";
 import { useUploadThing } from "@/lib/uploadthing";
+import { API_URL } from "@/lib/api";
 
 export default function ProfilePage() {
   const { user, token, updateUser } = useAuth();
@@ -99,7 +100,7 @@ export default function ProfilePage() {
         return;
       }
 
-      const res = await fetch("/api/user/profile", {
+      const res = await fetch(`${API_URL}/api/user/profile`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

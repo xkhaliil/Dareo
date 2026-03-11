@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/card";
 import { signInSchema, type SignInValues } from "@/lib/auth";
 import { useAuth } from "@/context/auth-context";
+import { API_URL } from "@/lib/api";
 
 export default function SignInPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -34,7 +35,7 @@ export default function SignInPage() {
   async function onSubmit(data: SignInValues) {
     setServerError(null);
     try {
-      const res = await fetch("/api/auth/sign-in", {
+      const res = await fetch(`${API_URL}/api/auth/sign-in`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

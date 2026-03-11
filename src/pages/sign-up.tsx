@@ -17,6 +17,7 @@ import {
 import { signUpSchema, type SignUpValues } from "@/lib/auth";
 import { useAuth } from "@/context/auth-context";
 import { useUploadThing } from "@/lib/uploadthing";
+import { API_URL } from "@/lib/api";
 
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -54,7 +55,7 @@ export default function SignUpPage() {
         }
       }
 
-      const res = await fetch("/api/auth/sign-up", {
+      const res = await fetch(`${API_URL}/api/auth/sign-up`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -70,6 +70,7 @@ import {
 } from "lucide-react";
 
 import { computeLevel, computeRank } from "@/lib/xp";
+import { API_URL } from "@/lib/api";
 
 interface GroupMember {
   id: string;
@@ -183,7 +184,7 @@ export default function GroupPage() {
 
   async function fetchGroup() {
     try {
-      const res = await fetch(`/api/groups/${id}`, {
+      const res = await fetch(`${API_URL}/api/groups/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -215,7 +216,7 @@ export default function GroupPage() {
     setDareError(null);
 
     try {
-      const res = await fetch(`/api/groups/${id}/dares`, {
+      const res = await fetch(`${API_URL}/api/groups/${id}/dares`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -256,7 +257,7 @@ export default function GroupPage() {
   async function handleClaimDare(dareId: string) {
     setClaimingDareId(dareId);
     try {
-      const res = await fetch(`/api/groups/${id}/dares/${dareId}/claim`, {
+      const res = await fetch(`${API_URL}/api/groups/${id}/dares/${dareId}/claim`, {
         method: "PATCH",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -288,7 +289,7 @@ export default function GroupPage() {
   async function handleCompleteDare(dareId: string, status: "COMPLETED" | "PASSED" | "FAILED") {
     setCompletingDareId(dareId);
     try {
-      const res = await fetch(`/api/groups/${id}/dares/${dareId}/complete`, {
+      const res = await fetch(`${API_URL}/api/groups/${id}/dares/${dareId}/complete`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -326,7 +327,7 @@ export default function GroupPage() {
   async function handleDeleteDare(dareId: string) {
     setDeletingDareId(dareId);
     try {
-      const res = await fetch(`/api/groups/${id}/dares/${dareId}`, {
+      const res = await fetch(`${API_URL}/api/groups/${id}/dares/${dareId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -358,7 +359,7 @@ export default function GroupPage() {
     setEditError(null);
 
     try {
-      const res = await fetch(`/api/groups/${id}/dares/${editDareId}`, {
+      const res = await fetch(`${API_URL}/api/groups/${id}/dares/${editDareId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

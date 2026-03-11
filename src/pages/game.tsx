@@ -26,6 +26,7 @@ import {
   Copy,
   Check,
 } from "lucide-react";
+import { API_URL } from "@/lib/api";
 
 interface GroupPreview {
   id: string;
@@ -63,7 +64,7 @@ export default function GamePage() {
 
   async function fetchGroups() {
     try {
-      const res = await fetch("/api/groups", {
+      const res = await fetch(`${API_URL}/api/groups`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
@@ -83,7 +84,7 @@ export default function GamePage() {
     setCreateError(null);
 
     try {
-      const res = await fetch("/api/groups", {
+      const res = await fetch(`${API_URL}/api/groups`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -115,7 +116,7 @@ export default function GamePage() {
     setJoinError(null);
 
     try {
-      const res = await fetch("/api/groups/join", {
+      const res = await fetch(`${API_URL}/api/groups/join`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
