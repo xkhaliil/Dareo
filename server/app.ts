@@ -8,6 +8,9 @@ import groupRouter from "./routes/group.js";
 import { uploadRouter } from "./uploadthing.js";
 
 const app = express();
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' })
+})
 
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
