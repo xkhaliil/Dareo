@@ -22,20 +22,20 @@ import {
   Check,
 } from "lucide-react";
 import { useUploadThing } from "@/lib/uploadthing";
-import { API_URL } from "@/lib/api";
+import { useUpdateProfile } from "@/hooks/use-user-service";
 
 export default function ProfilePage() {
-  const { user, token, updateUser } = useAuth();
+  const { user, updateUser } = useAuth();
   const [editing, setEditing] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { startUpload } = useUploadThing("avatarUploader");
+  const updateProfileMutation = useUpdateProfile();
 
   if (!user) return null;
 
@@ -75,7 +75,6 @@ export default function ProfilePage() {
 
   async function handleSave() {
     if (!user) return;
-    setSaving(true);
     setError(null);
 
     try {
@@ -96,33 +95,13 @@ export default function ProfilePage() {
       // Only call API if something changed
       if (Object.keys(body).length === 0) {
         setEditing(false);
-        setSaving(false);
         return;
       }
 
-      const res = await fetch(`${API_URL}/api/user/profile`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(body),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || "Something went wrong");
-        setSaving(false);
-        return;
-      }
-
-      updateUser(data);
+      await updateProfileMutation.mutateAsync(body);
       setEditing(false);
-    } catch {
-      setError("Network error — is the server running?");
-    } finally {
-      setSaving(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Network error — is the server running?");
     }
   }
 
@@ -284,10 +263,10 @@ export default function ProfilePage() {
                   <div className="flex gap-3 pt-2">
                     <Button
                       className="flex-1 gap-2 cursor-pointer"
-                      disabled={saving}
+                      disabled={updateProfileMutation.isPending}
                       onClick={handleSave}
                     >
-                      {saving ? (
+                      {updateProfileMutation.isPending ? (
                         <>
                           <Loader2 className="size-4 animate-spin" /> Saving…
                         </>
@@ -300,7 +279,7 @@ export default function ProfilePage() {
                     <Button
                       variant="outline"
                       className="gap-2 cursor-pointer"
-                      disabled={saving}
+                      disabled={updateProfileMutation.isPending}
                       onClick={cancelEditing}
                     >
                       <X className="size-4" /> Cancel

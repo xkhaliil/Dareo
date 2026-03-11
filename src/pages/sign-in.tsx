@@ -15,14 +15,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { signInSchema, type SignInValues } from "@/lib/auth";
-import { useAuth } from "@/context/auth-context";
-import { API_URL } from "@/lib/api";
+import { useSignIn } from "@/hooks/use-auth-service";
 
 export default function SignInPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const signInMutation = useSignIn();
 
   const {
     register,
@@ -35,26 +34,15 @@ export default function SignInPage() {
   async function onSubmit(data: SignInValues) {
     setServerError(null);
     try {
-      const res = await fetch(`${API_URL}/api/auth/sign-in`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
+      await signInMutation.mutateAsync({
+        email: data.email,
+        password: data.password,
       });
-
-      const body = await res.json();
-
-      if (!res.ok) {
-        setServerError(body.error || "Something went wrong");
-        return;
-      }
-
-      login(body.token, body.user);
       navigate("/game");
-    } catch {
-      setServerError("Network error — is the server running?");
+    } catch (err) {
+      setServerError(
+        err instanceof Error ? err.message : "Network error — is the server running?"
+      );
     }
   }
 

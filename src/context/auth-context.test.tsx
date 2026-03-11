@@ -1,6 +1,7 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
-import { AuthProvider, useAuth } from "./auth-context";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, act } from "@testing-library/react";
+import { useAuth, AuthProvider } from "./auth-context";
+import { useAuthStore } from "@/stores/auth-store";
 
 function TestConsumer() {
   const { isAuthenticated, user } = useAuth();
@@ -13,6 +14,11 @@ function TestConsumer() {
 }
 
 describe("AuthProvider", () => {
+  beforeEach(() => {
+    localStorage.clear();
+    useAuthStore.setState({ user: null, token: null, isAuthenticated: false });
+  });
+
   it("renders children and provides default unauthenticated state", () => {
     render(
       <AuthProvider>
@@ -25,9 +31,34 @@ describe("AuthProvider", () => {
 });
 
 describe("useAuth", () => {
-  it("throws when used outside AuthProvider", () => {
-    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
-    expect(() => render(<TestConsumer />)).toThrow();
-    spy.mockRestore();
+  beforeEach(() => {
+    localStorage.clear();
+    useAuthStore.setState({ user: null, token: null, isAuthenticated: false });
+  });
+
+  it("works without a provider (Zustand is global)", () => {
+    render(<TestConsumer />);
+    expect(screen.getByTestId("auth").textContent).toBe("no");
+  });
+
+  it("login updates state and localStorage", () => {
+    const LoginButton = () => {
+      const { login } = useAuth();
+      return (
+        <button onClick={() => login("tok123", { id: "1", username: "Alice", email: "a@b.com", avatarUrl: null, xp: 0, level: 1, rank: "ROOKIE" })}>
+          Log In
+        </button>
+      );
+    };
+    render(
+      <>
+        <LoginButton />
+        <TestConsumer />
+      </>
+    );
+    act(() => screen.getByText("Log In").click());
+    expect(screen.getByTestId("auth").textContent).toBe("yes");
+    expect(screen.getByTestId("user").textContent).toBe("Alice");
+    expect(localStorage.getItem("token")).toBe("tok123");
   });
 });

@@ -2,25 +2,27 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SignInPage from "./sign-in";
+import { useAuthStore } from "@/stores/auth-store";
 
 const mockNavigate = vi.fn();
-const mockLogin = vi.fn();
 
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
   return { ...actual, useNavigate: () => mockNavigate };
 });
 
-vi.mock("@/context/auth-context", () => ({
-  useAuth: () => ({ login: mockLogin }),
-}));
-
 function renderPage() {
+  const queryClient = new QueryClient({
+    defaultOptions: { mutations: { retry: false } },
+  });
   return render(
-    <MemoryRouter>
-      <SignInPage />
-    </MemoryRouter>
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <SignInPage />
+      </MemoryRouter>
+    </QueryClientProvider>
   );
 }
 
@@ -28,6 +30,7 @@ describe("SignInPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.restoreAllMocks();
+    useAuthStore.setState({ user: null, token: null, isAuthenticated: false });
   });
 
   it("renders the sign-in form", () => {
@@ -123,7 +126,9 @@ describe("SignInPage", () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(mockLogin).toHaveBeenCalledWith("fake-token", expect.objectContaining({ username: "test" }));
+      const state = useAuthStore.getState();
+      expect(state.token).toBe("fake-token");
+      expect(state.user).toEqual(expect.objectContaining({ username: "test" }));
       expect(mockNavigate).toHaveBeenCalledWith("/game");
     });
   });
@@ -163,7 +168,7 @@ describe("SignInPage", () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/Network error/)).toBeInTheDocument();
+      expect(screen.getByText(/network down/i)).toBeInTheDocument();
     });
   });
 

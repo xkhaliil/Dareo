@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/auth-context";
 import Navbar from "@/components/navbar";
@@ -26,119 +26,54 @@ import {
   Copy,
   Check,
 } from "lucide-react";
-import { API_URL } from "@/lib/api";
-
-interface GroupPreview {
-  id: string;
-  name: string;
-  code: string;
-  members: { user: { id: string; username: string; avatarUrl: string | null } }[];
-  myRole: string;
-}
+import { useGroups, useCreateGroup, useJoinGroup } from "@/hooks/use-group-service";
 
 export default function GamePage() {
-  const { user, token } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [groups, setGroups] = useState<GroupPreview[]>([]);
-  const [loadingGroups, setLoadingGroups] = useState(true);
+  const { data: groups = [], isLoading: loadingGroups } = useGroups();
+  const createGroupMutation = useCreateGroup();
+  const joinGroupMutation = useJoinGroup();
 
   // Create group state
   const [createOpen, setCreateOpen] = useState(false);
   const [groupName, setGroupName] = useState("");
-  const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
 
   // Join group state
   const [joinOpen, setJoinOpen] = useState(false);
   const [joinCode, setJoinCode] = useState("");
-  const [joining, setJoining] = useState(false);
   const [joinError, setJoinError] = useState<string | null>(null);
 
   // Copied code state
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchGroups();
-  }, []);
-
-  async function fetchGroups() {
-    try {
-      const res = await fetch(`${API_URL}/api/groups`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setGroups(data);
-      }
-    } catch {
-      // silently fail
-    } finally {
-      setLoadingGroups(false);
-    }
-  }
-
   async function handleCreate() {
     if (!groupName.trim()) return;
-    setCreating(true);
     setCreateError(null);
 
     try {
-      const res = await fetch(`${API_URL}/api/groups`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ name: groupName.trim() }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setCreateError(data.error || "Something went wrong");
-        setCreating(false);
-        return;
-      }
-
+      const data = await createGroupMutation.mutateAsync(groupName.trim());
       setCreateOpen(false);
       setGroupName("");
       navigate(`/group/${data.id}`);
-    } catch {
-      setCreateError("Network error");
-      setCreating(false);
+    } catch (err) {
+      setCreateError(err instanceof Error ? err.message : "Network error");
     }
   }
 
   async function handleJoin() {
     if (!joinCode.trim()) return;
-    setJoining(true);
     setJoinError(null);
 
     try {
-      const res = await fetch(`${API_URL}/api/groups/join`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ code: joinCode.trim() }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setJoinError(data.error || "Something went wrong");
-        setJoining(false);
-        return;
-      }
-
+      const data = await joinGroupMutation.mutateAsync(joinCode.trim());
       setJoinOpen(false);
       setJoinCode("");
       navigate(`/group/${data.id}`);
-    } catch {
-      setJoinError("Network error");
-      setJoining(false);
+    } catch (err) {
+      setJoinError(err instanceof Error ? err.message : "Network error");
     }
   }
 
@@ -248,10 +183,10 @@ export default function GamePage() {
                   </div>
                   <Button
                     className="w-full gap-2 cursor-pointer"
-                    disabled={creating || !groupName.trim()}
+                    disabled={createGroupMutation.isPending || !groupName.trim()}
                     onClick={handleCreate}
                   >
-                    {creating ? (
+                    {createGroupMutation.isPending ? (
                       <><Loader2 className="size-4 animate-spin" /> Creating…</>
                     ) : (
                       <><Plus className="size-4" /> Create Group</>
@@ -295,10 +230,10 @@ export default function GamePage() {
                   </div>
                   <Button
                     className="w-full gap-2 cursor-pointer"
-                    disabled={joining || !joinCode.trim()}
+                    disabled={joinGroupMutation.isPending || !joinCode.trim()}
                     onClick={handleJoin}
                   >
-                    {joining ? (
+                    {joinGroupMutation.isPending ? (
                       <><Loader2 className="size-4 animate-spin" /> Joining…</>
                     ) : (
                       <><LogIn className="size-4" /> Join Group</>

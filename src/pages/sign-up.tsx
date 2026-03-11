@@ -15,9 +15,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { signUpSchema, type SignUpValues } from "@/lib/auth";
-import { useAuth } from "@/context/auth-context";
+import { useSignUp } from "@/hooks/use-auth-service";
 import { useUploadThing } from "@/lib/uploadthing";
-import { API_URL } from "@/lib/api";
 
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -28,7 +27,7 @@ export default function SignUpPage() {
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const signUpMutation = useSignUp();
 
   const { startUpload } = useUploadThing("avatarUploader");
 
@@ -55,29 +54,18 @@ export default function SignUpPage() {
         }
       }
 
-      const res = await fetch(`${API_URL}/api/auth/sign-up`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: data.username,
-          email: data.email,
-          password: data.password,
-          avatarUrl,
-        }),
+      await signUpMutation.mutateAsync({
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        avatarUrl,
       });
-
-      const body = await res.json();
-
-      if (!res.ok) {
-        setServerError(body.error || "Something went wrong");
-        return;
-      }
-
-      login(body.token, body.user);
       navigate("/game");
-    } catch {
+    } catch (err) {
       setIsUploading(false);
-      setServerError("Network error — is the server running?");
+      setServerError(
+        err instanceof Error ? err.message : "Network error — is the server running?"
+      );
     }
   }
 

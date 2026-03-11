@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/auth-context";
 import Navbar from "@/components/navbar";
@@ -70,43 +70,15 @@ import {
 } from "lucide-react";
 
 import { computeLevel, computeRank } from "@/lib/xp";
-import { API_URL } from "@/lib/api";
-
-interface GroupMember {
-  id: string;
-  role: string;
-  joinedAt: string;
-  user: {
-    id: string;
-    username: string;
-    avatarUrl: string | null;
-    rank: string;
-    level: number;
-  };
-}
-
-interface GroupDare {
-  id: string;
-  title: string;
-  description: string;
-  difficulty: string;
-  xpReward: number;
-  status: string;
-  createdAt: string;
-  completedAt: string | null;
-  author: { id: string; username: string; avatarUrl: string | null };
-  assignedTo: { id: string; username: string; avatarUrl: string | null } | null;
-}
-
-interface GroupData {
-  id: string;
-  name: string;
-  code: string;
-  createdAt: string;
-  members: GroupMember[];
-  dares: GroupDare[];
-  myRole: string;
-}
+import {
+  useGroup,
+  useCreateDare,
+  useClaimDare,
+  useCompleteDare,
+  useDeleteDare,
+  useEditDare,
+} from "@/hooks/use-group-service";
+import type { GroupDare } from "@/services/group-api";
 
 const difficultyColors: Record<string, string> = {
   EASY: "bg-green-500/10 text-green-400",
@@ -146,12 +118,18 @@ const XP_DEFAULTS: Record<string, number> = {
 
 export default function GroupPage() {
   const { id } = useParams<{ id: string }>();
-  const { token, user: currentUser, updateUser } = useAuth();
+  const { user: currentUser, updateUser } = useAuth();
   const navigate = useNavigate();
 
-  const [group, setGroup] = useState<GroupData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: group, isLoading: loading, error: queryError } = useGroup(id!);
+  const error = queryError ? (queryError instanceof Error ? queryError.message : "Failed to load group") : null;
+
+  const createDareMutation = useCreateDare(id!);
+  const claimDareMutation = useClaimDare(id!);
+  const completeDareMutation = useCompleteDare(id!);
+  const deleteDareMutation = useDeleteDare(id!);
+  const editDareMutation = useEditDare(id!);
+
   const [copied, setCopied] = useState(false);
 
   // Create dare state
@@ -160,7 +138,6 @@ export default function GroupPage() {
   const [dareDesc, setDareDesc] = useState("");
   const [dareDifficulty, setDareDifficulty] = useState("EASY");
   const [dareXp, setDareXp] = useState(10);
-  const [creatingDare, setCreatingDare] = useState(false);
   const [dareError, setDareError] = useState<string | null>(null);
   const [claimingDareId, setClaimingDareId] = useState<string | null>(null);
   const [completingDareId, setCompletingDareId] = useState<string | null>(null);
@@ -175,33 +152,7 @@ export default function GroupPage() {
   const [editDesc, setEditDesc] = useState("");
   const [editDifficulty, setEditDifficulty] = useState("EASY");
   const [editXp, setEditXp] = useState(10);
-  const [editSaving, setEditSaving] = useState(false);
   const [editError, setEditError] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchGroup();
-  }, [id]);
-
-  async function fetchGroup() {
-    try {
-      const res = await fetch(`${API_URL}/api/groups/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || "Failed to load group");
-        return;
-      }
-
-      setGroup(data);
-    } catch {
-      setError("Network error");
-    } finally {
-      setLoading(false);
-    }
-  }
 
   function copyCode() {
     if (!group) return;
@@ -212,72 +163,32 @@ export default function GroupPage() {
 
   async function handleCreateDare() {
     if (!dareTitle.trim() || !dareDesc.trim()) return;
-    setCreatingDare(true);
     setDareError(null);
 
     try {
-      const res = await fetch(`${API_URL}/api/groups/${id}/dares`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          title: dareTitle.trim(),
-          description: dareDesc.trim(),
-          difficulty: dareDifficulty,
-          xpReward: dareXp,
-        }),
+      await createDareMutation.mutateAsync({
+        title: dareTitle.trim(),
+        description: dareDesc.trim(),
+        difficulty: dareDifficulty,
+        xpReward: dareXp,
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setDareError(data.error || "Something went wrong");
-        setCreatingDare(false);
-        return;
-      }
-
-      // Add new dare to list
-      setGroup((prev) =>
-        prev ? { ...prev, dares: [data, ...prev.dares] } : prev
-      );
       setDareOpen(false);
       setDareTitle("");
       setDareDesc("");
       setDareDifficulty("EASY");
       setDareXp(10);
-    } catch {
-      setDareError("Network error");
-    } finally {
-      setCreatingDare(false);
+    } catch (err) {
+      setDareError(err instanceof Error ? err.message : "Network error");
     }
   }
 
   async function handleClaimDare(dareId: string) {
     setClaimingDareId(dareId);
     try {
-      const res = await fetch(`${API_URL}/api/groups/${id}/dares/${dareId}/claim`, {
-        method: "PATCH",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        setGroup((prev) =>
-          prev
-            ? {
-                ...prev,
-                dares: prev.dares.map((d) => (d.id === dareId ? data : d)),
-              }
-            : prev
-        );
-        // +5 XP for claiming
-        if (currentUser) {
-          const newXp = currentUser.xp + 5;
-          updateUser({ ...currentUser, xp: newXp, level: computeLevel(newXp), rank: computeRank(newXp) });
-        }
+      await claimDareMutation.mutateAsync(dareId);
+      if (currentUser) {
+        const newXp = currentUser.xp + 5;
+        updateUser({ ...currentUser, xp: newXp, level: computeLevel(newXp), rank: computeRank(newXp) });
       }
     } catch {
       // silently fail
@@ -289,32 +200,17 @@ export default function GroupPage() {
   async function handleCompleteDare(dareId: string, status: "COMPLETED" | "PASSED" | "FAILED") {
     setCompletingDareId(dareId);
     try {
-      const res = await fetch(`${API_URL}/api/groups/${id}/dares/${dareId}/complete`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setGroup((prev) =>
-          prev ? { ...prev, dares: prev.dares.map((d) => (d.id === dareId ? data : d)) } : prev
-        );
-        // If COMPLETED, update XP for the assignee in auth context if it's the current user
-        if (currentUser) {
-          const dare = group?.dares.find((d) => d.id === dareId);
-          if (dare && dare.assignedTo?.id === currentUser.id) {
-            let newXp: number;
-            if (status === "COMPLETED") {
-              newXp = currentUser.xp + dare.xpReward;
-            } else {
-              // PASSED or FAILED: deduct 200% of dare XP
-              newXp = Math.max(0, currentUser.xp - dare.xpReward * 2);
-            }
-            updateUser({ ...currentUser, xp: newXp, level: computeLevel(newXp), rank: computeRank(newXp) });
+      await completeDareMutation.mutateAsync({ dareId, status });
+      if (currentUser) {
+        const dare = group?.dares.find((d) => d.id === dareId);
+        if (dare && dare.assignedTo?.id === currentUser.id) {
+          let newXp: number;
+          if (status === "COMPLETED") {
+            newXp = currentUser.xp + dare.xpReward;
+          } else {
+            newXp = Math.max(0, currentUser.xp - dare.xpReward * 2);
           }
+          updateUser({ ...currentUser, xp: newXp, level: computeLevel(newXp), rank: computeRank(newXp) });
         }
       }
     } catch {
@@ -327,15 +223,7 @@ export default function GroupPage() {
   async function handleDeleteDare(dareId: string) {
     setDeletingDareId(dareId);
     try {
-      const res = await fetch(`${API_URL}/api/groups/${id}/dares/${dareId}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        setGroup((prev) =>
-          prev ? { ...prev, dares: prev.dares.filter((d) => d.id !== dareId) } : prev
-        );
-      }
+      await deleteDareMutation.mutateAsync(dareId);
     } catch {
       // silently fail
     } finally {
@@ -355,40 +243,19 @@ export default function GroupPage() {
 
   async function handleEditDare() {
     if (!editDareId || !editTitle.trim() || !editDesc.trim()) return;
-    setEditSaving(true);
     setEditError(null);
 
     try {
-      const res = await fetch(`${API_URL}/api/groups/${id}/dares/${editDareId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          title: editTitle.trim(),
-          description: editDesc.trim(),
-          difficulty: editDifficulty,
-          xpReward: editXp,
-        }),
+      await editDareMutation.mutateAsync({
+        dareId: editDareId,
+        title: editTitle.trim(),
+        description: editDesc.trim(),
+        difficulty: editDifficulty,
+        xpReward: editXp,
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setEditError(data.error || "Something went wrong");
-        setEditSaving(false);
-        return;
-      }
-
-      setGroup((prev) =>
-        prev ? { ...prev, dares: prev.dares.map((d) => (d.id === editDareId ? data : d)) } : prev
-      );
       setEditOpen(false);
-    } catch {
-      setEditError("Network error");
-    } finally {
-      setEditSaving(false);
+    } catch (err) {
+      setEditError(err instanceof Error ? err.message : "Network error");
     }
   }
 
@@ -615,10 +482,10 @@ export default function GroupPage() {
                     </div>
                     <Button
                       className="w-full gap-2 cursor-pointer"
-                      disabled={creatingDare || !dareTitle.trim() || !dareDesc.trim()}
+                      disabled={createDareMutation.isPending || !dareTitle.trim() || !dareDesc.trim()}
                       onClick={handleCreateDare}
                     >
-                      {creatingDare ? (
+                      {createDareMutation.isPending ? (
                         <><Loader2 className="size-4 animate-spin" /> Creating…</>
                       ) : (
                         <><Plus className="size-4" /> Create Dare</>
@@ -852,10 +719,10 @@ export default function GroupPage() {
             <DrawerFooter>
               <Button
                 className="w-full cursor-pointer"
-                disabled={editSaving || !editTitle.trim() || !editDesc.trim()}
+                disabled={editDareMutation.isPending || !editTitle.trim() || !editDesc.trim()}
                 onClick={handleEditDare}
               >
-                {editSaving ? (
+                {editDareMutation.isPending ? (
                   <Loader2 className="size-4 animate-spin mr-2" />
                 ) : null}
                 Save Changes
