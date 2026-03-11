@@ -25,7 +25,7 @@ import { useUploadThing } from "@/lib/uploadthing";
 import { useUpdateProfile } from "@/hooks/use-user-service";
 
 export default function ProfilePage() {
-  const { user, updateUser } = useAuth();
+  const { user } = useAuth();
   const [editing, setEditing] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
