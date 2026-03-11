@@ -33,18 +33,18 @@ Players can create dares in their groups and **claim dares themselves** to earn 
 
 | Feature | Description |
 |---|---|
-| 👥 **Private Groups** | Create or join invite-only groups using unique group codes |
-| 🎯 **Create Dares** | Create dares with title, description, difficulty, and XP reward |
-| 🙋 **Self-Assign Dares** | Members claim open dares themselves (+5 XP for accepting) |
-| ✅ **Complete Dares** | Mark dares as completed to earn the dare's full XP reward |
-| ⏭️ **Pass / Fail** | Pass or fail a dare — costs 200% of the dare's XP as a penalty |
-| ⭐ **XP & Points System** | Earn and lose XP based on dare outcomes |
-| 📊 **Level Progression** | Level up every 10 XP — level = floor(XP / 10) |
-| 🏆 **Ranking System** | 7 ranks from Rookie (0 XP) to Legend (700+ XP) |
-| 🖼️ **Avatar Upload** | Upload custom profile avatars via UploadThing |
-| ✏️ **Profile Editing** | Edit username, email, and avatar from the profile page |
-| 🔐 **Authentication** | JWT-based auth with bcrypt password hashing |
-| 🎮 **Game-style UI** | Dark theme with shadcn/ui components and smooth animations |
+|  **Private Groups** | Create or join invite-only groups using unique group codes |
+|  **Create Dares** | Create dares with title, description, difficulty, and XP reward |
+|  **Self-Assign Dares** | Members claim open dares themselves (+5 XP for accepting) |
+|  **Complete Dares** | Mark dares as completed to earn the dare's full XP reward |
+|  **Pass / Fail** | Pass or fail a dare — costs 200% of the dare's XP as a penalty |
+|  **XP & Points System** | Earn and lose XP based on dare outcomes |
+|  **Level Progression** | Level up every 10 XP — level = floor(XP / 10) |
+|  **Ranking System** | 7 ranks from Rookie (0 XP) to Legend (700+ XP) |
+|  **Avatar Upload** | Upload custom profile avatars via UploadThing |
+|  **Profile Editing** | Edit username, email, and avatar from the profile page |
+|  **Authentication** | JWT-based auth with bcrypt password hashing |
+|  **Game-style UI** | Dark theme with shadcn/ui components and smooth animations |
 
 ---
 
@@ -399,17 +399,17 @@ npm run test:watch
 
 ## 🌟 Upcoming Features
 
-- 🔥 Daily streak rewards
-- 🎁 Random dare generator
-- 🎭 Anonymous dare mode
-- 🏅 Achievements & badges
-- 💬 In-group chat
-- 🎵 Level-up sound effects
-- 🌙 Dark mode themes
-- ⚡ Double XP events
-- 🧠 AI-generated dare suggestions
-- 📈 Global leaderboard across all groups
-- 🎟️ Seasonal events & limited-time challenges
+-  Daily streak rewards
+-  Random dare generator
+-  Anonymous dare mode
+-  Achievements & badges
+-  In-group chat
+-  Level-up sound effects
+-  Dark mode themes
+-  Double XP events
+-  AI-generated dare suggestions
+-  Global leaderboard across all groups
+-  Seasonal events & limited-time challenges
 
 ---
 
