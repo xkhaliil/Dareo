@@ -1,11 +1,10 @@
+import SignInPage from "@/features/auth/sign-in-page";
 import { useAuthStore } from "@/stores/auth-store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-
-import SignInPage from "./sign-in";
 
 const mockNavigate = vi.fn();
 

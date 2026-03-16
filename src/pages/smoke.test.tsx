@@ -1,12 +1,12 @@
-import { AuthUser, useAuthStore } from "@/stores/auth-store";
+import SignUpPage from "@/features/auth/sign-up-page";
+import GamePage from "@/features/game/game-page";
+import ProfilePage from "@/features/profile/profile-page";
+import type { AuthUser } from "@/stores/auth-store";
+import { useAuthStore } from "@/stores/auth-store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-
-import GamePage from "./game";
-import ProfilePage from "./profile";
-import SignUpPage from "./sign-up";
 
 const testUser = {
   id: "1",
@@ -30,6 +30,12 @@ vi.mock("@/context/auth-context", () => ({
 }));
 
 vi.mock("@/lib/uploadthing", () => ({
+  useUploadThing: () => ({
+    startUpload: vi.fn(),
+    isUploading: false,
+  }),
+}));
+vi.mock("@/shared/lib/uploadthing", () => ({
   useUploadThing: () => ({
     startUpload: vi.fn(),
     isUploading: false,
