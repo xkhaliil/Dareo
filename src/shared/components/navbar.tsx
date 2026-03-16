@@ -1,8 +1,10 @@
-import { Link, useNavigate } from "react-router-dom";
-import { Dice5, User, LogOut } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
+import { Dice5, LogOut, User } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +14,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -24,10 +25,13 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="relative z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
-      <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link to={isAuthenticated ? "/game" : "/"} className="flex items-center gap-2">
-          <Dice5 className="size-5 text-primary" />
+    <nav className="border-border/50 bg-background/80 relative z-50 border-b backdrop-blur-xl">
+      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
+        <Link
+          to={isAuthenticated ? "/game" : "/"}
+          className="flex items-center gap-2"
+        >
+          <Dice5 className="text-primary size-5" />
           <span className="text-lg font-bold tracking-tight">Dareo</span>
         </Link>
 
@@ -39,7 +43,7 @@ export default function Navbar() {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer">
+                <button className="focus-visible:ring-ring cursor-pointer rounded-full outline-none focus-visible:ring-2">
                   <Avatar size="default">
                     {user.avatarUrl && (
                       <AvatarImage src={user.avatarUrl} alt={user.username} />
@@ -53,8 +57,10 @@ export default function Navbar() {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>
                   <div className="flex flex-col gap-1">
-                    <span className="font-semibold text-sm">{user.username}</span>
-                    <span className="text-xs text-muted-foreground font-normal">
+                    <span className="text-sm font-semibold">
+                      {user.username}
+                    </span>
+                    <span className="text-muted-foreground text-xs font-normal">
                       {user.email}
                     </span>
                   </div>

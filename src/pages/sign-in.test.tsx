@@ -1,10 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { useAuthStore } from "@/stores/auth-store";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
 import SignInPage from "./sign-in";
-import { useAuthStore } from "@/stores/auth-store";
 
 const mockNavigate = vi.fn();
 
@@ -22,7 +23,7 @@ function renderPage() {
       <MemoryRouter>
         <SignInPage />
       </MemoryRouter>
-    </QueryClientProvider>
+    </QueryClientProvider>,
   );
 }
 
@@ -64,7 +65,7 @@ describe("SignInPage", () => {
     // Find the toggle button (the button inside the password field)
     const toggleButtons = screen.getAllByRole("button", { hidden: true });
     const eyeButton = toggleButtons.find(
-      (btn) => btn.closest(".relative") && btn.querySelector("svg")
+      (btn) => btn.closest(".relative") && btn.querySelector("svg"),
     );
 
     if (eyeButton) {
@@ -112,10 +113,20 @@ describe("SignInPage", () => {
       ok: true,
       json: async () => ({
         token: "fake-token",
-        user: { id: "1", username: "test", email: "test@example.com", xp: 0, level: 1, rank: "ROOKIE", avatarUrl: null },
+        user: {
+          id: "1",
+          username: "test",
+          email: "test@example.com",
+          xp: 0,
+          level: 1,
+          rank: "ROOKIE",
+          avatarUrl: null,
+        },
       }),
     };
-    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockResponse as Response);
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      mockResponse as Response,
+    );
 
     renderPage();
 
@@ -140,7 +151,9 @@ describe("SignInPage", () => {
       ok: false,
       json: async () => ({ error: "Invalid credentials" }),
     };
-    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockResponse as Response);
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      mockResponse as Response,
+    );
 
     renderPage();
 
@@ -157,7 +170,9 @@ describe("SignInPage", () => {
 
   it("shows network error when fetch fails", async () => {
     const user = userEvent.setup();
-    vi.spyOn(globalThis, "fetch").mockRejectedValueOnce(new Error("network down"));
+    vi.spyOn(globalThis, "fetch").mockRejectedValueOnce(
+      new Error("network down"),
+    );
 
     renderPage();
 

@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
 import { useIsMobile } from "./use-mobile";
 
 describe("useIsMobile", () => {
@@ -7,7 +8,11 @@ describe("useIsMobile", () => {
 
   beforeEach(() => {
     listeners = [];
-    Object.defineProperty(window, "innerWidth", { writable: true, configurable: true, value: 1024 });
+    Object.defineProperty(window, "innerWidth", {
+      writable: true,
+      configurable: true,
+      value: 1024,
+    });
     window.matchMedia = vi.fn().mockImplementation((query: string) => ({
       matches: false,
       media: query,
@@ -22,7 +27,11 @@ describe("useIsMobile", () => {
   });
 
   it("returns true for mobile viewport", () => {
-    Object.defineProperty(window, "innerWidth", { writable: true, configurable: true, value: 500 });
+    Object.defineProperty(window, "innerWidth", {
+      writable: true,
+      configurable: true,
+      value: 500,
+    });
     const { result } = renderHook(() => useIsMobile());
     expect(result.current).toBe(true);
   });

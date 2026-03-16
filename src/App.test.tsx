@@ -1,6 +1,8 @@
-import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
+import { describe, expect, it, vi } from "vitest";
+
+import App from "./App";
 
 vi.mock("@/context/auth-context", () => ({
   useAuth: () => ({
@@ -13,14 +15,12 @@ vi.mock("@/context/auth-context", () => ({
   }),
 }));
 
-import App from "./App";
-
 describe("App", () => {
   it("renders the landing page without crashing", () => {
     render(
       <MemoryRouter>
         <App />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     expect(screen.getByText("Dareo")).toBeInTheDocument();
   });

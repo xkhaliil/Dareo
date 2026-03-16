@@ -1,10 +1,11 @@
-import { Router, type Request, type Response } from "express";
 import bcrypt from "bcryptjs";
+import { Router, type Request, type Response } from "express";
 import jwt from "jsonwebtoken";
+
 import prisma from "../db.js";
 
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET ;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // ─── Sign Up ─────────────────────────────────────────────
 
@@ -13,7 +14,9 @@ router.post("/sign-up", async (req: Request, res: Response) => {
     const { username, email, password, avatarUrl } = req.body;
 
     if (!username || !email || !password) {
-      res.status(400).json({ error: "Username, email, and password are required" });
+      res
+        .status(400)
+        .json({ error: "Username, email, and password are required" });
       return;
     }
 
@@ -23,7 +26,9 @@ router.post("/sign-up", async (req: Request, res: Response) => {
 
     if (existingUser) {
       const field = existingUser.email === email ? "email" : "username";
-      res.status(409).json({ error: `A user with this ${field} already exists` });
+      res
+        .status(409)
+        .json({ error: `A user with this ${field} already exists` });
       return;
     }
 

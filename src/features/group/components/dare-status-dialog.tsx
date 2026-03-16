@@ -1,4 +1,3 @@
-import { Loader2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,6 +8,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/shared/components/ui/alert-dialog";
+import { Loader2 } from "lucide-react";
 
 type DareStatus = "COMPLETED" | "PASSED" | "FAILED";
 
@@ -31,9 +31,12 @@ const STATUS_LABELS: Record<DareStatus, string> = {
 };
 
 const STATUS_DESCRIPTIONS: Record<DareStatus, string> = {
-  COMPLETED: "This will mark the dare as completed and award you XP. This cannot be undone.",
-  PASSED: "This will mark the dare as passed. No XP will be awarded. This cannot be undone.",
-  FAILED: "This will mark the dare as failed. No XP will be awarded. This cannot be undone.",
+  COMPLETED:
+    "This will mark the dare as completed and award you XP. This cannot be undone.",
+  PASSED:
+    "This will mark the dare as passed. No XP will be awarded. This cannot be undone.",
+  FAILED:
+    "This will mark the dare as failed. No XP will be awarded. This cannot be undone.",
 };
 
 const STATUS_BUTTON_CLASSES: Record<DareStatus, string> = {
@@ -49,16 +52,25 @@ export default function DareStatusDialog({
   isLoading,
 }: DareStatusDialogProps) {
   return (
-    <AlertDialog open={!!statusConfirm} onOpenChange={(open) => { if (!open) onOpenChange(false); }}>
+    <AlertDialog
+      open={!!statusConfirm}
+      onOpenChange={(open) => {
+        if (!open) onOpenChange(false);
+      }}
+    >
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{statusConfirm ? STATUS_LABELS[statusConfirm.status] : ""}</AlertDialogTitle>
+          <AlertDialogTitle>
+            {statusConfirm ? STATUS_LABELS[statusConfirm.status] : ""}
+          </AlertDialogTitle>
           <AlertDialogDescription>
             {statusConfirm ? STATUS_DESCRIPTIONS[statusConfirm.status] : ""}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
+          <AlertDialogCancel className="cursor-pointer">
+            Cancel
+          </AlertDialogCancel>
           <AlertDialogAction
             className={`cursor-pointer ${statusConfirm ? STATUS_BUTTON_CLASSES[statusConfirm.status] : ""}`}
             disabled={isLoading}
@@ -68,8 +80,11 @@ export default function DareStatusDialog({
               }
             }}
           >
-            {isLoading && <Loader2 className="size-4 animate-spin mr-2" />}
-            {statusConfirm ? statusConfirm.status.charAt(0) + statusConfirm.status.slice(1).toLowerCase() : ""}
+            {isLoading && <Loader2 className="mr-2 size-4 animate-spin" />}
+            {statusConfirm
+              ? statusConfirm.status.charAt(0) +
+                statusConfirm.status.slice(1).toLowerCase()
+              : ""}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

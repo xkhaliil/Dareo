@@ -8,10 +8,14 @@ export class ApiError extends Error {
   }
 }
 
-export async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
+export async function apiFetch<T>(
+  path: string,
+  options?: RequestInit,
+): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, options);
   const data = await res.json();
-  if (!res.ok) throw new ApiError(res.status, data.error || "Something went wrong");
+  if (!res.ok)
+    throw new ApiError(res.status, data.error || "Something went wrong");
   return data as T;
 }
 

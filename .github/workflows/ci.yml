@@ -8,7 +8,7 @@ on:
 
 jobs:
   quality:
-    name: Lint, typecheck & test
+    name: Lint, format, typecheck & test
     runs-on: ubuntu-latest
 
     steps:
@@ -26,6 +26,9 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Format check
+        run: npx prettier --check .
 
       - name: Typecheck
         run: npx tsc -b --noEmit

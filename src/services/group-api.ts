@@ -4,7 +4,9 @@ export interface GroupPreview {
   id: string;
   name: string;
   code: string;
-  members: { user: { id: string; username: string; avatarUrl: string | null } }[];
+  members: {
+    user: { id: string; username: string; avatarUrl: string | null };
+  }[];
   myRole: string;
 }
 
@@ -74,7 +76,12 @@ export function joinGroup(code: string, token: string | null) {
 
 export function createDare(
   groupId: string,
-  data: { title: string; description: string; difficulty: string; xpReward: number },
+  data: {
+    title: string;
+    description: string;
+    difficulty: string;
+    xpReward: number;
+  },
   token: string | null,
 ) {
   return apiFetch<GroupDare>(`/api/groups/${groupId}/dares`, {
@@ -84,7 +91,11 @@ export function createDare(
   });
 }
 
-export function claimDare(groupId: string, dareId: string, token: string | null) {
+export function claimDare(
+  groupId: string,
+  dareId: string,
+  token: string | null,
+) {
   return apiFetch<GroupDare>(`/api/groups/${groupId}/dares/${dareId}/claim`, {
     method: "PATCH",
     headers: authHeaders(token),
@@ -97,14 +108,21 @@ export function completeDare(
   status: "COMPLETED" | "PASSED" | "FAILED",
   token: string | null,
 ) {
-  return apiFetch<GroupDare>(`/api/groups/${groupId}/dares/${dareId}/complete`, {
-    method: "PATCH",
-    headers: authHeaders(token),
-    body: JSON.stringify({ status }),
-  });
+  return apiFetch<GroupDare>(
+    `/api/groups/${groupId}/dares/${dareId}/complete`,
+    {
+      method: "PATCH",
+      headers: authHeaders(token),
+      body: JSON.stringify({ status }),
+    },
+  );
 }
 
-export function deleteDare(groupId: string, dareId: string, token: string | null) {
+export function deleteDare(
+  groupId: string,
+  dareId: string,
+  token: string | null,
+) {
   return apiFetch<void>(`/api/groups/${groupId}/dares/${dareId}`, {
     method: "DELETE",
     headers: authHeaders(token),
@@ -114,7 +132,12 @@ export function deleteDare(groupId: string, dareId: string, token: string | null
 export function editDare(
   groupId: string,
   dareId: string,
-  data: { title: string; description: string; difficulty: string; xpReward: number },
+  data: {
+    title: string;
+    description: string;
+    difficulty: string;
+    xpReward: number;
+  },
   token: string | null,
 ) {
   return apiFetch<GroupDare>(`/api/groups/${groupId}/dares/${dareId}`, {

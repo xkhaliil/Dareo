@@ -1,4 +1,5 @@
 import { useRef } from "react";
+
 import { Upload } from "lucide-react";
 
 interface AvatarUploadProps {
@@ -30,14 +31,18 @@ export default function AvatarUpload({
       <button
         type="button"
         onClick={() => fileInputRef.current?.click()}
-        className={`group relative ${dimension} rounded-full border-2 border-dashed border-border/60 hover:border-primary/50 bg-muted/30 flex items-center justify-center overflow-hidden transition-colors cursor-pointer`}
+        className={`group relative ${dimension} border-border/60 hover:border-primary/50 bg-muted/30 flex cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-dashed transition-colors`}
       >
         {preview ? (
-          <img src={preview} alt="Avatar preview" className="size-full object-cover" />
+          <img
+            src={preview}
+            alt="Avatar preview"
+            className="size-full object-cover"
+          />
         ) : (
-          <Upload className="size-5 text-muted-foreground group-hover:text-primary transition-colors" />
+          <Upload className="text-muted-foreground group-hover:text-primary size-5 transition-colors" />
         )}
-        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
           <Upload className="size-5 text-white" />
         </div>
       </button>
@@ -48,7 +53,7 @@ export default function AvatarUpload({
         className="hidden"
         onChange={handleChange}
       />
-      <span className="text-xs text-muted-foreground">{label}</span>
+      <span className="text-muted-foreground text-xs">{label}</span>
     </div>
   );
 }

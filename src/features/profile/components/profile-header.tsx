@@ -1,10 +1,14 @@
-import { Card, CardContent } from "@/shared/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/shared/components/ui/avatar";
+import AvatarUpload from "@/features/auth/components/avatar-upload";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/shared/components/ui/avatar";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
-import { Pencil } from "lucide-react";
-import AvatarUpload from "@/features/auth/components/avatar-upload";
+import { Card, CardContent } from "@/shared/components/ui/card";
 import type { AuthUser } from "@/stores/auth-store";
+import { Pencil } from "lucide-react";
 
 const RANK_COLORS: Record<string, string> = {
   ROOKIE: "bg-zinc-500/10 text-zinc-400",
@@ -32,9 +36,9 @@ export default function ProfileHeader({
   onStartEditing,
 }: ProfileHeaderProps) {
   return (
-    <Card className="bg-card/50 border-border/50 backdrop-blur-sm mb-6 animate-fade-in">
+    <Card className="bg-card/50 border-border/50 animate-fade-in mb-6 backdrop-blur-sm">
       <CardContent className="p-8">
-        <div className="flex flex-col items-center text-center gap-4">
+        <div className="flex flex-col items-center gap-4 text-center">
           {editing ? (
             <AvatarUpload
               preview={avatarPreview || user.avatarUrl}
@@ -44,7 +48,9 @@ export default function ProfileHeader({
             />
           ) : (
             <Avatar className="size-24">
-              {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.username} />}
+              {user.avatarUrl && (
+                <AvatarImage src={user.avatarUrl} alt={user.username} />
+              )}
               <AvatarFallback className="bg-primary/10 text-primary text-2xl font-bold">
                 {user.username.slice(0, 2).toUpperCase()}
               </AvatarFallback>
@@ -53,17 +59,26 @@ export default function ProfileHeader({
 
           {!editing && (
             <div>
-              <h1 className="text-2xl font-bold tracking-tight mb-1">{user.username}</h1>
-              <p className="text-sm text-muted-foreground">{user.email}</p>
+              <h1 className="mb-1 text-2xl font-bold tracking-tight">
+                {user.username}
+              </h1>
+              <p className="text-muted-foreground text-sm">{user.email}</p>
             </div>
           )}
 
-          <Badge className={`px-3 py-1 text-xs font-semibold ${RANK_COLORS[user.rank] ?? RANK_COLORS.ROOKIE}`}>
+          <Badge
+            className={`px-3 py-1 text-xs font-semibold ${RANK_COLORS[user.rank] ?? RANK_COLORS.ROOKIE}`}
+          >
             {user.rank}
           </Badge>
 
           {!editing && (
-            <Button variant="outline" size="sm" className="gap-2 cursor-pointer" onClick={onStartEditing}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="cursor-pointer gap-2"
+              onClick={onStartEditing}
+            >
               <Pencil className="size-3.5" /> Edit Profile
             </Button>
           )}

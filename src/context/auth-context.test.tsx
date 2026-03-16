@@ -1,7 +1,8 @@
-import { describe, it, expect, beforeEach } from "vitest";
-import { render, screen, act } from "@testing-library/react";
-import { useAuth, AuthProvider } from "./auth-context";
 import { useAuthStore } from "@/stores/auth-store";
+import { act, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it } from "vitest";
+
+import { AuthProvider, useAuth } from "./auth-context";
 
 function TestConsumer() {
   const { isAuthenticated, user } = useAuth();
@@ -23,7 +24,7 @@ describe("AuthProvider", () => {
     render(
       <AuthProvider>
         <TestConsumer />
-      </AuthProvider>
+      </AuthProvider>,
     );
     expect(screen.getByTestId("auth").textContent).toBe("no");
     expect(screen.getByTestId("user").textContent).toBe("none");
@@ -45,7 +46,19 @@ describe("useAuth", () => {
     const LoginButton = () => {
       const { login } = useAuth();
       return (
-        <button onClick={() => login("tok123", { id: "1", username: "Alice", email: "a@b.com", avatarUrl: null, xp: 0, level: 1, rank: "ROOKIE" })}>
+        <button
+          onClick={() =>
+            login("tok123", {
+              id: "1",
+              username: "Alice",
+              email: "a@b.com",
+              avatarUrl: null,
+              xp: 0,
+              level: 1,
+              rank: "ROOKIE",
+            })
+          }
+        >
           Log In
         </button>
       );
@@ -54,7 +67,7 @@ describe("useAuth", () => {
       <>
         <LoginButton />
         <TestConsumer />
-      </>
+      </>,
     );
     act(() => screen.getByText("Log In").click());
     expect(screen.getByTestId("auth").textContent).toBe("yes");

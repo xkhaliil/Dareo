@@ -35,28 +35,28 @@ Players can create dares in their groups and **claim dares themselves** to earn 
 
 ## ✨ Core Features
 
-| Feature | Description |
-|---|---|
-|  **Private Groups** | Create or join invite-only groups using unique group codes |
-|  **Create Dares** | Create dares with title, description, difficulty, and XP reward |
-|  **Self-Assign Dares** | Members claim open dares themselves (+5 XP for accepting) |
-|  **Complete Dares** | Mark dares as completed to earn the dare's full XP reward |
-|  **Pass / Fail** | Pass or fail a dare — costs 200% of the dare's XP as a penalty |
-|  **Edit & Delete Dares** | Authors can edit dare details or delete them entirely |
-|  **XP & Points System** | Earn and lose XP based on dare outcomes |
-|  **Level Progression** | Level up every 10 XP — level = floor(XP / 10) |
-|  **Ranking System** | 7 ranks from Rookie (0 XP) to Legend (700+ XP) |
-|  **Avatar Upload** | Upload custom profile avatars via UploadThing cloud storage |
-|  **Profile Editing** | Edit username, email, and avatar from the profile page |
-|  **JWT Authentication** | Secure auth with bcrypt password hashing and Bearer tokens |
-|  **Zustand State** | Global client state management with localStorage persistence |
-|  **TanStack Query** | Server state with automatic caching, refetching, and cache invalidation |
-|  **Error Boundary** | Graceful error handling with styled fallback UI |
-|  **Suspense Loading** | Smooth loading states with React Suspense fallbacks |
-|  **Protected Routes** | Route guards redirect unauthenticated users to sign-in |
-|  **Responsive Design** | Mobile-first UI with responsive breakpoints |
-|  **Game-style UI** | Dark theme with glassmorphism, animations, and shadcn/ui components |
-|  **Production Deployed** | Frontend on Vercel, API on Railway, DB on Supabase |
+| Feature                 | Description                                                             |
+| ----------------------- | ----------------------------------------------------------------------- |
+| **Private Groups**      | Create or join invite-only groups using unique group codes              |
+| **Create Dares**        | Create dares with title, description, difficulty, and XP reward         |
+| **Self-Assign Dares**   | Members claim open dares themselves (+5 XP for accepting)               |
+| **Complete Dares**      | Mark dares as completed to earn the dare's full XP reward               |
+| **Pass / Fail**         | Pass or fail a dare — costs 200% of the dare's XP as a penalty          |
+| **Edit & Delete Dares** | Authors can edit dare details or delete them entirely                   |
+| **XP & Points System**  | Earn and lose XP based on dare outcomes                                 |
+| **Level Progression**   | Level up every 10 XP — level = floor(XP / 10)                           |
+| **Ranking System**      | 7 ranks from Rookie (0 XP) to Legend (700+ XP)                          |
+| **Avatar Upload**       | Upload custom profile avatars via UploadThing cloud storage             |
+| **Profile Editing**     | Edit username, email, and avatar from the profile page                  |
+| **JWT Authentication**  | Secure auth with bcrypt password hashing and Bearer tokens              |
+| **Zustand State**       | Global client state management with localStorage persistence            |
+| **TanStack Query**      | Server state with automatic caching, refetching, and cache invalidation |
+| **Error Boundary**      | Graceful error handling with styled fallback UI                         |
+| **Suspense Loading**    | Smooth loading states with React Suspense fallbacks                     |
+| **Protected Routes**    | Route guards redirect unauthenticated users to sign-in                  |
+| **Responsive Design**   | Mobile-first UI with responsive breakpoints                             |
+| **Game-style UI**       | Dark theme with glassmorphism, animations, and shadcn/ui components     |
+| **Production Deployed** | Frontend on Vercel, API on Railway, DB on Supabase                      |
 
 ---
 
@@ -64,23 +64,23 @@ Players can create dares in their groups and **claim dares themselves** to earn 
 
 ### XP System
 
-| Action | XP Change |
-|---|---|
-| **Claim a dare** (self-assign) | +5 XP |
-| **Complete a dare** | + dare's XP reward |
-| **Pass a dare** | −200% of dare's XP |
-| **Fail a dare** | −200% of dare's XP |
+| Action                         | XP Change          |
+| ------------------------------ | ------------------ |
+| **Claim a dare** (self-assign) | +5 XP              |
+| **Complete a dare**            | + dare's XP reward |
+| **Pass a dare**                | −200% of dare's XP |
+| **Fail a dare**                | −200% of dare's XP |
 
 > XP can never go below 0.
 
 ### Difficulty & XP Caps
 
 | Difficulty | Default XP | Max XP |
-|---|---|---|
-| Easy | 10 | 25 |
-| Medium | 25 | 50 |
-| Hard | 50 | 100 |
-| Extreme | 100 | 200 |
+| ---------- | ---------- | ------ |
+| Easy       | 10         | 25     |
+| Medium     | 25         | 50     |
+| Hard       | 50         | 100    |
+| Extreme    | 100        | 200    |
 
 ### Leveling
 
@@ -88,15 +88,15 @@ Level is calculated as `floor(XP / 10)` with a minimum of level 1. To reach leve
 
 ### Ranking System
 
-| Rank | XP Required |
-|---|---|
-| 🟤 Rookie | 0 |
-| 🥉 Bronze | 50 |
-| 🥈 Silver | 150 |
-| 🥇 Gold | 250 |
-| 💎 Platinum | 350 |
-| 💠 Diamond | 500 |
-| 👑 Legend | 700 |
+| Rank        | XP Required |
+| ----------- | ----------- |
+| 🟤 Rookie   | 0           |
+| 🥉 Bronze   | 50          |
+| 🥈 Silver   | 150         |
+| 🥇 Gold     | 250         |
+| 💎 Platinum | 350         |
+| 💠 Diamond  | 500         |
+| 👑 Legend   | 700         |
 
 ### Dare Lifecycle
 
@@ -106,12 +106,12 @@ Create Dare → Member Claims It (+5 XP) → Complete / Pass / Fail → XP Updat
 
 ### Dare Statuses
 
-| Status | Description |
-|---|---|
-| `OPEN` | Dare is available to be claimed |
+| Status      | Description                              |
+| ----------- | ---------------------------------------- |
+| `OPEN`      | Dare is available to be claimed          |
 | `COMPLETED` | Assignee completed the dare — XP awarded |
-| `PASSED` | Assignee passed on the dare — XP penalty |
-| `FAILED` | Assignee failed the dare — XP penalty |
+| `PASSED`    | Assignee passed on the dare — XP penalty |
+| `FAILED`    | Assignee failed the dare — XP penalty    |
 
 ---
 
@@ -237,60 +237,60 @@ classDiagram
 
 ### Frontend
 
-| Technology | Purpose |
-|---|---|
-| **React 19** | UI library with hooks, Suspense, and component-based architecture |
-| **TypeScript 5.9** | Type-safe development across the entire codebase |
-| **Vite 7** | Build tool and dev server with HMR (Hot Module Replacement) |
-| **Tailwind CSS 4** | Utility-first CSS framework with dark theme design |
-| **shadcn/ui** (New York style) | 47 pre-built accessible UI components built on Radix UI primitives |
-| **Zustand 5** | Lightweight global state management (auth store) |
-| **TanStack Query 5** | Server state management — caching, mutations, query invalidation |
-| **React Router 7** | Client-side routing with protected routes and `<Navigate>` redirects |
-| **React Hook Form + Zod 4** | Performant form handling with schema-based validation |
-| **Lucide React** | Consistent icon library used across all pages |
-| **UploadThing** | Client-side file upload integration (avatar images) |
+| Technology                     | Purpose                                                              |
+| ------------------------------ | -------------------------------------------------------------------- |
+| **React 19**                   | UI library with hooks, Suspense, and component-based architecture    |
+| **TypeScript 5.9**             | Type-safe development across the entire codebase                     |
+| **Vite 7**                     | Build tool and dev server with HMR (Hot Module Replacement)          |
+| **Tailwind CSS 4**             | Utility-first CSS framework with dark theme design                   |
+| **shadcn/ui** (New York style) | 47 pre-built accessible UI components built on Radix UI primitives   |
+| **Zustand 5**                  | Lightweight global state management (auth store)                     |
+| **TanStack Query 5**           | Server state management — caching, mutations, query invalidation     |
+| **React Router 7**             | Client-side routing with protected routes and `<Navigate>` redirects |
+| **React Hook Form + Zod 4**    | Performant form handling with schema-based validation                |
+| **Lucide React**               | Consistent icon library used across all pages                        |
+| **UploadThing**                | Client-side file upload integration (avatar images)                  |
 
 ### Backend
 
-| Technology | Purpose |
-|---|---|
-| **Express 5** | REST API server with route-based architecture |
-| **Prisma 7** | Type-safe ORM with PostgreSQL adapter (`@prisma/adapter-pg`) |
-| **PostgreSQL** (Supabase) | Cloud-hosted relational database |
-| **JWT** (jsonwebtoken) | Stateless authentication tokens |
-| **bcryptjs** | Secure password hashing with salt rounds |
-| **UploadThing** | Server-side file upload route handler |
-| **CORS** | Cross-origin resource sharing with origin whitelist |
+| Technology                | Purpose                                                      |
+| ------------------------- | ------------------------------------------------------------ |
+| **Express 5**             | REST API server with route-based architecture                |
+| **Prisma 7**              | Type-safe ORM with PostgreSQL adapter (`@prisma/adapter-pg`) |
+| **PostgreSQL** (Supabase) | Cloud-hosted relational database                             |
+| **JWT** (jsonwebtoken)    | Stateless authentication tokens                              |
+| **bcryptjs**              | Secure password hashing with salt rounds                     |
+| **UploadThing**           | Server-side file upload route handler                        |
+| **CORS**                  | Cross-origin resource sharing with origin whitelist          |
 
 ### Testing
 
-| Technology | Purpose |
-|---|---|
-| **Vitest 4** | Test runner natively integrated with Vite's transform pipeline |
-| **React Testing Library** | Component testing using DOM queries (no implementation details) |
-| **@testing-library/user-event** | Realistic user interaction simulation |
-| **@testing-library/jest-dom** | Custom DOM assertion matchers |
-| **jsdom** | Browser environment simulation for Node.js tests |
+| Technology                      | Purpose                                                         |
+| ------------------------------- | --------------------------------------------------------------- |
+| **Vitest 4**                    | Test runner natively integrated with Vite's transform pipeline  |
+| **React Testing Library**       | Component testing using DOM queries (no implementation details) |
+| **@testing-library/user-event** | Realistic user interaction simulation                           |
+| **@testing-library/jest-dom**   | Custom DOM assertion matchers                                   |
+| **jsdom**                       | Browser environment simulation for Node.js tests                |
 
 ### Dev Tools
 
-| Technology | Purpose |
-|---|---|
-| **ESLint** | Static code analysis and linting |
-| **Prettier** | Opinionated code formatting |
-| **depcheck** | Unused dependency detection (`npm run depcheck`) |
-| **tsx** | TypeScript execution for the Express server |
+| Technology       | Purpose                                             |
+| ---------------- | --------------------------------------------------- |
+| **ESLint**       | Static code analysis and linting                    |
+| **Prettier**     | Opinionated code formatting                         |
+| **depcheck**     | Unused dependency detection (`npm run depcheck`)    |
+| **tsx**          | TypeScript execution for the Express server         |
 | **concurrently** | Parallel execution of client + server dev processes |
 
 ### Deployment & Infrastructure
 
-| Technology | Purpose |
-|---|---|
-| **Vercel** | Frontend hosting with SPA routing rewrites |
-| **Railway** | Backend API hosting with automatic deploys |
-| **Supabase** | Managed PostgreSQL database hosting |
-| **UploadThing** | Cloud file storage for user avatars |
+| Technology      | Purpose                                    |
+| --------------- | ------------------------------------------ |
+| **Vercel**      | Frontend hosting with SPA routing rewrites |
+| **Railway**     | Backend API hosting with automatic deploys |
+| **Supabase**    | Managed PostgreSQL database hosting        |
+| **UploadThing** | Cloud file storage for user avatars        |
 
 ---
 
@@ -307,9 +307,9 @@ The app follows a **4-layer architecture**: Pages → Service Hooks → API Func
 
 ### State Management
 
-| Kind | Tool | Manages |
-|---|---|---|
-| **Client state** | **Zustand** (`stores/auth-store.ts`) | Auth (user, token, login/logout) — persisted to `localStorage` |
+| Kind             | Tool                                          | Manages                                                          |
+| ---------------- | --------------------------------------------- | ---------------------------------------------------------------- |
+| **Client state** | **Zustand** (`stores/auth-store.ts`)          | Auth (user, token, login/logout) — persisted to `localStorage`   |
 | **Server state** | **TanStack Query** (`hooks/use-*-service.ts`) | Groups, dares, members — cached 30s, auto-refetches on mutations |
 
 ### Error Handling
@@ -321,13 +321,13 @@ The app follows a **4-layer architecture**: Pages → Service Hooks → API Func
 
 ### Routing
 
-| Path | Component | Access |
-|---|---|---|
-| `/` | Landing page | Public (redirects to `/game` if logged in) |
-| `/sign-in` `/sign-up` | Auth forms | Public |
-| `/game` | Dashboard | 🔒 Protected |
-| `/group/:id` | Group detail | 🔒 Protected |
-| `/profile` | User profile | 🔒 Protected |
+| Path                  | Component    | Access                                     |
+| --------------------- | ------------ | ------------------------------------------ |
+| `/`                   | Landing page | Public (redirects to `/game` if logged in) |
+| `/sign-in` `/sign-up` | Auth forms   | Public                                     |
+| `/game`               | Dashboard    | 🔒 Protected                               |
+| `/group/:id`          | Group detail | 🔒 Protected                               |
+| `/profile`            | User profile | 🔒 Protected                               |
 
 Protected routes redirect to `/sign-in` via `<Navigate replace />`. Provider hierarchy: `StrictMode → QueryClientProvider → BrowserRouter → AuthProvider → ErrorBoundary → Suspense → Routes`.
 
@@ -341,12 +341,12 @@ Forms validated by **Zod** → `useSignIn()`/`useSignUp()` mutation → Express 
 
 ### Deployment
 
-| Layer | Platform | URL |
-|---|---|---|
-| Frontend | **Vercel** | `https://dareo.vercel.app` |
-| Backend | **Railway** | `https://dareo-production.up.railway.app` |
-| Database | **Supabase** | Managed PostgreSQL |
-| Files | **UploadThing** | Cloud avatar uploads |
+| Layer    | Platform        | URL                                       |
+| -------- | --------------- | ----------------------------------------- |
+| Frontend | **Vercel**      | `https://dareo.vercel.app`                |
+| Backend  | **Railway**     | `https://dareo-production.up.railway.app` |
+| Database | **Supabase**    | Managed PostgreSQL                        |
+| Files    | **UploadThing** | Cloud avatar uploads                      |
 
 `VITE_API_URL` baked at build time. CORS whitelist: `localhost:5173` + `dareo.vercel.app`. SPA routing via `vercel.json` rewrites.
 
@@ -453,13 +453,13 @@ dareo/
 
 ### Architecture layers
 
-| Layer | Location | Rule |
-|---|---|---|
-| **API functions** | `services/*-api.ts` | Pure async, no React imports |
-| **Service hooks** | `hooks/use-*-service.ts` | TanStack Query wrappers only |
-| **Business hooks** | `features/*/hooks/` | Side-effects, derived state, no JSX |
-| **Components** | `features/*/components/` | Pure rendering, props in / events out |
-| **Page orchestrators** | `features/*/*-page.tsx` | Wires hooks to components, no logic |
+| Layer                  | Location                 | Rule                                  |
+| ---------------------- | ------------------------ | ------------------------------------- |
+| **API functions**      | `services/*-api.ts`      | Pure async, no React imports          |
+| **Service hooks**      | `hooks/use-*-service.ts` | TanStack Query wrappers only          |
+| **Business hooks**     | `features/*/hooks/`      | Side-effects, derived state, no JSX   |
+| **Components**         | `features/*/components/` | Pure rendering, props in / events out |
+| **Page orchestrators** | `features/*/*-page.tsx`  | Wires hooks to components, no logic   |
 
 ## 🚀 Getting Started
 
@@ -499,17 +499,17 @@ npm run dev
 
 ### Available Scripts
 
-| Script | Description |
-|---|---|
-| `npm run dev` | Start both client and server in development mode (concurrently) |
-| `npm run dev:client` | Start only the Vite dev server |
-| `npm run dev:server` | Start only the Express API server (with tsx watch) |
-| `npm run build` | Generate Prisma client, type-check, and build for production |
-| `npm run lint` | Run ESLint across the codebase |
-| `npm test` | Run all 69 tests once with Vitest |
-| `npm run test:watch` | Run tests in interactive watch mode |
-| `npm run depcheck` | Check for unused dependencies (with known false-positive ignores) |
-| `npm run preview` | Preview the production build locally |
+| Script               | Description                                                       |
+| -------------------- | ----------------------------------------------------------------- |
+| `npm run dev`        | Start both client and server in development mode (concurrently)   |
+| `npm run dev:client` | Start only the Vite dev server                                    |
+| `npm run dev:server` | Start only the Express API server (with tsx watch)                |
+| `npm run build`      | Generate Prisma client, type-check, and build for production      |
+| `npm run lint`       | Run ESLint across the codebase                                    |
+| `npm test`           | Run all 69 tests once with Vitest                                 |
+| `npm run test:watch` | Run tests in interactive watch mode                               |
+| `npm run depcheck`   | Check for unused dependencies (with known false-positive ignores) |
+| `npm run preview`    | Preview the production build locally                              |
 
 ---
 
@@ -537,17 +537,17 @@ npm run test:watch
 
 ### Test Coverage
 
-| Test File | Type | Tests | Description |
-|---|---|---|---|
-| `src/lib/xp.test.ts` | **Comprehensive unit** | 23 | `computeLevel` & `computeRank` — all boundary values and edge cases |
-| `src/lib/auth.test.ts` | **Comprehensive unit** | 13 | Zod schemas — username, email, password rules, mismatched passwords |
-| `src/components/navbar.test.tsx` | **Comprehensive component** | 10 | Authenticated/unauthenticated states, links, XP badge, avatar |
-| `src/pages/sign-in.test.tsx` | **Interactive component** | 9 | Typing, password toggle, form submission, server/network errors |
-| `src/lib/utils.test.ts` | Unit | 5 | `cn()` class merging, deduplication, edge cases |
-| `src/pages/smoke.test.tsx` | Smoke | 3 | SignUpPage, ProfilePage, GamePage render without crashing |
-| `src/context/auth-context.test.tsx` | Integration | 3 | AuthProvider defaults, useAuth without provider, login updates state |
-| `src/hooks/use-mobile.test.ts` | Unit | 2 | `useIsMobile` hook — desktop and mobile viewports |
-| `src/App.test.tsx` | Smoke | 1 | Landing page renders |
+| Test File                           | Type                        | Tests | Description                                                          |
+| ----------------------------------- | --------------------------- | ----- | -------------------------------------------------------------------- |
+| `src/lib/xp.test.ts`                | **Comprehensive unit**      | 23    | `computeLevel` & `computeRank` — all boundary values and edge cases  |
+| `src/lib/auth.test.ts`              | **Comprehensive unit**      | 13    | Zod schemas — username, email, password rules, mismatched passwords  |
+| `src/components/navbar.test.tsx`    | **Comprehensive component** | 10    | Authenticated/unauthenticated states, links, XP badge, avatar        |
+| `src/pages/sign-in.test.tsx`        | **Interactive component**   | 9     | Typing, password toggle, form submission, server/network errors      |
+| `src/lib/utils.test.ts`             | Unit                        | 5     | `cn()` class merging, deduplication, edge cases                      |
+| `src/pages/smoke.test.tsx`          | Smoke                       | 3     | SignUpPage, ProfilePage, GamePage render without crashing            |
+| `src/context/auth-context.test.tsx` | Integration                 | 3     | AuthProvider defaults, useAuth without provider, login updates state |
+| `src/hooks/use-mobile.test.ts`      | Unit                        | 2     | `useIsMobile` hook — desktop and mobile viewports                    |
+| `src/App.test.tsx`                  | Smoke                       | 1     | Landing page renders                                                 |
 
 **Total: 69 tests across 9 test files — all passing ✅**
 
@@ -559,57 +559,57 @@ All API routes are prefixed with `/api` and served by the Express 5 backend.
 
 ### Authentication (`/api/auth`)
 
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
-| `POST` | `/api/auth/sign-up` | Register a new user | No |
-| `POST` | `/api/auth/sign-in` | Login and receive JWT | No |
+| Method | Endpoint            | Description           | Auth |
+| ------ | ------------------- | --------------------- | ---- |
+| `POST` | `/api/auth/sign-up` | Register a new user   | No   |
+| `POST` | `/api/auth/sign-in` | Login and receive JWT | No   |
 
 ### User (`/api/user`)
 
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
+| Method  | Endpoint            | Description                       | Auth   |
+| ------- | ------------------- | --------------------------------- | ------ |
 | `PATCH` | `/api/user/profile` | Update username, email, or avatar | 🔒 JWT |
 
 ### Groups (`/api/groups`)
 
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
-| `GET` | `/api/groups` | List user's groups | 🔒 JWT |
-| `POST` | `/api/groups` | Create a new group | 🔒 JWT |
-| `POST` | `/api/groups/join` | Join a group by code | 🔒 JWT |
-| `GET` | `/api/groups/:id` | Get group details (members + dares) | 🔒 JWT |
+| Method | Endpoint           | Description                         | Auth   |
+| ------ | ------------------ | ----------------------------------- | ------ |
+| `GET`  | `/api/groups`      | List user's groups                  | 🔒 JWT |
+| `POST` | `/api/groups`      | Create a new group                  | 🔒 JWT |
+| `POST` | `/api/groups/join` | Join a group by code                | 🔒 JWT |
+| `GET`  | `/api/groups/:id`  | Get group details (members + dares) | 🔒 JWT |
 
 ### Dares (`/api/groups/:id/dares`)
 
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
-| `POST` | `/api/groups/:id/dares` | Create a new dare | 🔒 JWT |
-| `PATCH` | `/api/groups/:id/dares/:dareId` | Edit a dare (title, description, difficulty, XP) | 🔒 JWT |
-| `DELETE` | `/api/groups/:id/dares/:dareId` | Delete a dare | 🔒 JWT |
-| `PATCH` | `/api/groups/:id/dares/:dareId/claim` | Claim (self-assign) a dare | 🔒 JWT |
-| `PATCH` | `/api/groups/:id/dares/:dareId/complete` | Complete/pass/fail a dare | 🔒 JWT |
+| Method   | Endpoint                                 | Description                                      | Auth   |
+| -------- | ---------------------------------------- | ------------------------------------------------ | ------ |
+| `POST`   | `/api/groups/:id/dares`                  | Create a new dare                                | 🔒 JWT |
+| `PATCH`  | `/api/groups/:id/dares/:dareId`          | Edit a dare (title, description, difficulty, XP) | 🔒 JWT |
+| `DELETE` | `/api/groups/:id/dares/:dareId`          | Delete a dare                                    | 🔒 JWT |
+| `PATCH`  | `/api/groups/:id/dares/:dareId/claim`    | Claim (self-assign) a dare                       | 🔒 JWT |
+| `PATCH`  | `/api/groups/:id/dares/:dareId/complete` | Complete/pass/fail a dare                        | 🔒 JWT |
 
 ### File Upload (`/api/uploadthing`)
 
-| Method | Endpoint | Description | Auth |
-|---|---|---|---|
+| Method | Endpoint           | Description                         | Auth   |
+| ------ | ------------------ | ----------------------------------- | ------ |
 | `POST` | `/api/uploadthing` | Upload avatar image via UploadThing | 🔒 JWT |
 
 ---
 
 ## 🌟 Upcoming Features
 
--  Daily streak rewards
--  Random dare generator
--  Anonymous dare mode
--  Achievements & badges
--  In-group chat
--  Level-up sound effects
--  Dark mode themes
--  Double XP events
--  AI-generated dare suggestions
--  Global leaderboard across all groups
--  Seasonal events & limited-time challenges
+- Daily streak rewards
+- Random dare generator
+- Anonymous dare mode
+- Achievements & badges
+- In-group chat
+- Level-up sound effects
+- Dark mode themes
+- Double XP events
+- AI-generated dare suggestions
+- Global leaderboard across all groups
+- Seasonal events & limited-time challenges
 
 ---
 

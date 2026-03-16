@@ -1,11 +1,13 @@
 import { useState } from "react";
+
 import { useAuth } from "@/context/auth-context";
 import Navbar from "@/shared/components/navbar";
 import PageBackground from "@/shared/components/page-background";
 import PageFooter from "@/shared/components/page-footer";
+
+import AccountDetails from "./components/account-details";
 import ProfileHeader from "./components/profile-header";
 import ProfileStats from "./components/profile-stats";
-import AccountDetails from "./components/account-details";
 import { useProfileSave } from "./hooks/use-profile-save";
 
 export default function ProfilePage() {
@@ -46,11 +48,11 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="bg-background flex min-h-screen flex-col">
       <PageBackground />
       <Navbar />
       <main className="relative z-10 flex-1 px-6 py-10">
-        <div className="max-w-2xl mx-auto">
+        <div className="mx-auto max-w-2xl">
           <ProfileHeader
             user={user}
             editing={editing}

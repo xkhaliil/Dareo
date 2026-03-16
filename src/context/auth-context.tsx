@@ -1,4 +1,6 @@
+/* eslint-disable react-refresh/only-export-components */
 import type { ReactNode } from "react";
+
 import { useAuthStore } from "@/stores/auth-store";
 
 export type { AuthUser } from "@/stores/auth-store";

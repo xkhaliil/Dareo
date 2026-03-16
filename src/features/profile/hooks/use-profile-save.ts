@@ -1,7 +1,9 @@
 import { useState } from "react";
+
 import { useUploadThing } from "@/shared/lib/uploadthing";
-import { useUpdateProfile } from "@/hooks/use-user-service";
 import type { AuthUser } from "@/stores/auth-store";
+
+import { useUpdateProfile } from "@/hooks/use-user-service";
 
 interface UseProfileSaveOptions {
   user: AuthUser;
@@ -11,7 +13,13 @@ interface UseProfileSaveOptions {
   onSuccess: () => void;
 }
 
-export function useProfileSave({ user, username, email, avatarFile, onSuccess }: UseProfileSaveOptions) {
+export function useProfileSave({
+  user,
+  username,
+  email,
+  avatarFile,
+  onSuccess,
+}: UseProfileSaveOptions) {
   const [error, setError] = useState<string | null>(null);
   const { startUpload } = useUploadThing("avatarUploader");
   const updateProfileMutation = useUpdateProfile();
@@ -39,7 +47,11 @@ export function useProfileSave({ user, username, email, avatarFile, onSuccess }:
       await updateProfileMutation.mutateAsync(body);
       onSuccess();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Network error — is the server running?");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Network error — is the server running?",
+      );
     }
   }
 

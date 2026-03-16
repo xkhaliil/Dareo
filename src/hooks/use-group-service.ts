@@ -1,16 +1,16 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAuthStore } from "@/stores/auth-store";
 import {
-  fetchGroups,
-  fetchGroup,
-  createGroup,
-  joinGroup,
-  createDare,
   claimDare,
   completeDare,
+  createDare,
+  createGroup,
   deleteDare,
   editDare,
+  fetchGroup,
+  fetchGroups,
+  joinGroup,
 } from "@/services/group-api";
+import { useAuthStore } from "@/stores/auth-store";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useGroups() {
   const token = useAuthStore((s) => s.token);
@@ -59,8 +59,12 @@ export function useCreateDare(groupId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: { title: string; description: string; difficulty: string; xpReward: number }) =>
-      createDare(groupId, data, token),
+    mutationFn: (data: {
+      title: string;
+      description: string;
+      difficulty: string;
+      xpReward: number;
+    }) => createDare(groupId, data, token),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["group", groupId] });
     },
@@ -84,8 +88,10 @@ export function useCompleteDare(groupId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: { dareId: string; status: "COMPLETED" | "PASSED" | "FAILED" }) =>
-      completeDare(groupId, data.dareId, data.status, token),
+    mutationFn: (data: {
+      dareId: string;
+      status: "COMPLETED" | "PASSED" | "FAILED";
+    }) => completeDare(groupId, data.dareId, data.status, token),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["group", groupId] });
     },
@@ -109,7 +115,13 @@ export function useEditDare(groupId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: { dareId: string; title: string; description: string; difficulty: string; xpReward: number }) => {
+    mutationFn: (data: {
+      dareId: string;
+      title: string;
+      description: string;
+      difficulty: string;
+      xpReward: number;
+    }) => {
       const { dareId, ...rest } = data;
       return editDare(groupId, dareId, rest, token);
     },

@@ -1,11 +1,12 @@
 import "./App.css";
 
+import { useAuth } from "@/context/auth-context";
+import { ArrowRight, Dice5, Trophy, Users, Zap } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
+
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Users, Trophy, Zap, ArrowRight, Dice5 } from "lucide-react";
-import { useAuth } from "@/context/auth-context";
 import Navbar from "@/components/navbar";
 
 function App() {
@@ -16,12 +17,12 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="bg-background flex min-h-screen flex-col">
       {/* ===== BACKGROUND EFFECTS ===== */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-40%] left-1/2 -translate-x-1/2 w-150 h-150 rounded-full bg-purple-500/10 blur-[120px] animate-pulse-glow" />
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="animate-pulse-glow absolute top-[-40%] left-1/2 h-150 w-150 -translate-x-1/2 rounded-full bg-purple-500/10 blur-[120px]" />
         <div
-          className="absolute bottom-[-30%] right-[-10%] w-100 h-100 rounded-full bg-indigo-500/8 blur-[100px] animate-pulse-glow"
+          className="animate-pulse-glow absolute right-[-10%] bottom-[-30%] h-100 w-100 rounded-full bg-indigo-500/8 blur-[100px]"
           style={{ animationDelay: "2s" }}
         />
       </div>
@@ -30,8 +31,8 @@ function App() {
       <Navbar />
 
       {/* ===== HERO ===== */}
-      <main className="relative z-10 flex-1 flex items-center justify-center px-6">
-        <div className="max-w-2xl mx-auto text-center py-20">
+      <main className="relative z-10 flex flex-1 items-center justify-center px-6">
+        <div className="mx-auto max-w-2xl py-20 text-center">
           {/* Badge */}
           <div className="animate-fade-in">
             <Badge
@@ -39,30 +40,30 @@ function App() {
               className="mb-8 gap-1.5 px-3 py-1.5 text-xs"
             >
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
               </span>
               Season 1 — Now Live
             </Badge>
           </div>
 
           {/* Title */}
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-black tracking-tight leading-[1.05] mb-6 animate-fade-in-delay-1">
+          <h1 className="animate-fade-in-delay-1 mb-6 text-5xl leading-[1.05] font-black tracking-tight sm:text-6xl md:text-7xl">
             Dare your
             <br />
             <span className="text-primary">friends</span> 🎲
           </h1>
 
           {/* Subtitle */}
-          <p className="text-muted-foreground text-lg md:text-xl max-w-lg mx-auto mb-10 leading-relaxed animate-fade-in-delay-2">
+          <p className="text-muted-foreground animate-fade-in-delay-2 mx-auto mb-10 max-w-lg text-lg leading-relaxed md:text-xl">
             Challenge your crew, complete dares, earn XP and climb the
             leaderboard.
           </p>
 
           {/* CTA */}
-          <div className="flex gap-3 justify-center animate-fade-in-delay-3">
+          <div className="animate-fade-in-delay-3 flex justify-center gap-3">
             <Link to="/sign-up">
-              <Button size="lg" className="gap-2 text-base px-8 cursor-pointer">
+              <Button size="lg" className="cursor-pointer gap-2 px-8 text-base">
                 Start Playing
                 <ArrowRight className="size-4" />
               </Button>
@@ -72,45 +73,45 @@ function App() {
       </main>
 
       {/* ===== FLOATING GAME CARDS ===== */}
-      <div className="relative z-10 pb-24 px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <Card className="bg-card/50 border-border/50 backdrop-blur-sm animate-float">
+      <div className="relative z-10 px-6 pb-24">
+        <div className="mx-auto max-w-4xl">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <Card className="bg-card/50 border-border/50 animate-float backdrop-blur-sm">
               <CardContent className="flex items-start gap-4 p-5">
-                <div className="shrink-0 size-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-purple-500/10">
                   <Users className="size-5 text-purple-400" />
                 </div>
                 <div>
-                  <p className="font-semibold text-sm mb-1">Private Groups</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
+                  <p className="mb-1 text-sm font-semibold">Private Groups</p>
+                  <p className="text-muted-foreground text-xs leading-relaxed">
                     Create squads & invite friends
                   </p>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-card/50 border-border/50 backdrop-blur-sm animate-float-delayed">
+            <Card className="bg-card/50 border-border/50 animate-float-delayed backdrop-blur-sm">
               <CardContent className="flex items-start gap-4 p-5">
-                <div className="shrink-0 size-10 rounded-lg bg-pink-500/10 flex items-center justify-center">
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-pink-500/10">
                   <Zap className="size-5 text-pink-400" />
                 </div>
                 <div>
-                  <p className="font-semibold text-sm mb-1">Earn XP</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
+                  <p className="mb-1 text-sm font-semibold">Earn XP</p>
+                  <p className="text-muted-foreground text-xs leading-relaxed">
                     Level up & unlock new ranks
                   </p>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-card/50 border-border/50 backdrop-blur-sm animate-float">
+            <Card className="bg-card/50 border-border/50 animate-float backdrop-blur-sm">
               <CardContent className="flex items-start gap-4 p-5">
-                <div className="shrink-0 size-10 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-indigo-500/10">
                   <Trophy className="size-5 text-indigo-400" />
                 </div>
                 <div>
-                  <p className="font-semibold text-sm mb-1">Leaderboard</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
+                  <p className="mb-1 text-sm font-semibold">Leaderboard</p>
+                  <p className="text-muted-foreground text-xs leading-relaxed">
                     Compete for the top spot
                   </p>
                 </div>
@@ -121,9 +122,9 @@ function App() {
       </div>
 
       {/* ===== FOOTER ===== */}
-      <footer className="relative z-10 border-t border-border/50 py-6 px-6">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2 text-muted-foreground text-xs">
+      <footer className="border-border/50 relative z-10 border-t px-6 py-6">
+        <div className="mx-auto flex max-w-5xl items-center justify-between">
+          <div className="text-muted-foreground flex items-center gap-2 text-xs">
             <Dice5 className="size-3.5" />
             <span>© 2026 Dareo</span>
           </div>

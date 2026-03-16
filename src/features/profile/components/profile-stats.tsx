@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/shared/components/ui/card";
-import { Zap, Trophy } from "lucide-react";
 import type { AuthUser } from "@/stores/auth-store";
+import { Trophy, Zap } from "lucide-react";
 
 interface ProfileStatsProps {
   user: AuthUser;
@@ -8,26 +8,26 @@ interface ProfileStatsProps {
 
 export default function ProfileStats({ user }: ProfileStatsProps) {
   return (
-    <div className="grid grid-cols-2 gap-4 mb-6 animate-fade-in-delay-1">
+    <div className="animate-fade-in-delay-1 mb-6 grid grid-cols-2 gap-4">
       <Card className="bg-card/50 border-border/50 backdrop-blur-sm">
         <CardContent className="flex items-center gap-4 p-5">
-          <div className="size-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
+          <div className="flex size-10 items-center justify-center rounded-lg bg-purple-500/10">
             <Zap className="size-5 text-purple-400" />
           </div>
           <div>
             <p className="text-2xl font-bold">{user.xp}</p>
-            <p className="text-xs text-muted-foreground">Total XP</p>
+            <p className="text-muted-foreground text-xs">Total XP</p>
           </div>
         </CardContent>
       </Card>
       <Card className="bg-card/50 border-border/50 backdrop-blur-sm">
         <CardContent className="flex items-center gap-4 p-5">
-          <div className="size-10 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+          <div className="flex size-10 items-center justify-center rounded-lg bg-indigo-500/10">
             <Trophy className="size-5 text-indigo-400" />
           </div>
           <div>
             <p className="text-2xl font-bold">Level {user.level}</p>
-            <p className="text-xs text-muted-foreground">{user.rank}</p>
+            <p className="text-muted-foreground text-xs">{user.rank}</p>
           </div>
         </CardContent>
       </Card>

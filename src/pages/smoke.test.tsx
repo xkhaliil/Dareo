@@ -1,8 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { AuthUser, useAuthStore } from "@/stores/auth-store";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useAuthStore } from "@/stores/auth-store";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import GamePage from "./game";
+import ProfilePage from "./profile";
+import SignUpPage from "./sign-up";
 
 const testUser = {
   id: "1",
@@ -32,10 +36,6 @@ vi.mock("@/lib/uploadthing", () => ({
   }),
 }));
 
-import SignUpPage from "./sign-up";
-import ProfilePage from "./profile";
-import GamePage from "./game";
-
 function createWrapper() {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
@@ -48,7 +48,11 @@ function createWrapper() {
 }
 
 beforeEach(() => {
-  useAuthStore.setState({ user: testUser as any, token: "fake-token", isAuthenticated: true });
+  useAuthStore.setState({
+    user: testUser as AuthUser,
+    token: "fake-token",
+    isAuthenticated: true,
+  });
 });
 
 describe("SignUpPage", () => {

@@ -1,5 +1,6 @@
-import { apiFetch } from "@/lib/api";
 import type { AuthUser } from "@/stores/auth-store";
+
+import { apiFetch } from "@/lib/api";
 
 interface AuthResponse {
   token: string;

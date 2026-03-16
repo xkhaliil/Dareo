@@ -1,9 +1,6 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Plus, Loader2 } from "lucide-react";
+
 import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
-import { Label } from "@/shared/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -12,6 +9,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/components/ui/dialog";
+import { Input } from "@/shared/components/ui/input";
+import { Label } from "@/shared/components/ui/label";
+import { Loader2, Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
 import { useCreateGroup } from "@/hooks/use-group-service";
 
 export default function CreateGroupDialog() {
@@ -35,9 +37,16 @@ export default function CreateGroupDialog() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={(o) => { setOpen(o); setError(null); setGroupName(""); }}>
+    <Dialog
+      open={open}
+      onOpenChange={(o) => {
+        setOpen(o);
+        setError(null);
+        setGroupName("");
+      }}
+    >
       <DialogTrigger asChild>
-        <Button className="gap-2 cursor-pointer">
+        <Button className="cursor-pointer gap-2">
           <Plus className="size-4" /> Create Group
         </Button>
       </DialogTrigger>
@@ -45,12 +54,13 @@ export default function CreateGroupDialog() {
         <DialogHeader>
           <DialogTitle>Create a new group</DialogTitle>
           <DialogDescription>
-            Give your group a name. You'll get a unique code to share with friends.
+            Give your group a name. You'll get a unique code to share with
+            friends.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 pt-2">
           {error && (
-            <div className="rounded-md bg-destructive/10 border border-destructive/20 px-4 py-3 text-sm text-destructive">
+            <div className="bg-destructive/10 border-destructive/20 text-destructive rounded-md border px-4 py-3 text-sm">
               {error}
             </div>
           )}
@@ -65,14 +75,18 @@ export default function CreateGroupDialog() {
             />
           </div>
           <Button
-            className="w-full gap-2 cursor-pointer"
+            className="w-full cursor-pointer gap-2"
             disabled={createGroupMutation.isPending || !groupName.trim()}
             onClick={handleCreate}
           >
             {createGroupMutation.isPending ? (
-              <><Loader2 className="size-4 animate-spin" /> Creating…</>
+              <>
+                <Loader2 className="size-4 animate-spin" /> Creating…
+              </>
             ) : (
-              <><Plus className="size-4" /> Create Group</>
+              <>
+                <Plus className="size-4" /> Create Group
+              </>
             )}
           </Button>
         </div>

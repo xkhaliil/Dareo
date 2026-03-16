@@ -1,8 +1,14 @@
 import { useState } from "react";
+
 import { useAuth } from "@/context/auth-context";
-import { useClaimDare, useCompleteDare, useDeleteDare } from "@/hooks/use-group-service";
+import type { GroupDare, GroupData } from "@/services/group-api";
 import { computeLevel, computeRank } from "@/shared/lib/xp";
-import type { GroupData, GroupDare } from "@/services/group-api";
+
+import {
+  useClaimDare,
+  useCompleteDare,
+  useDeleteDare,
+} from "@/hooks/use-group-service";
 
 type DareStatus = "COMPLETED" | "PASSED" | "FAILED";
 
@@ -24,8 +30,12 @@ export function useGroupActions(groupId: string, group: GroupData | undefined) {
   const [deletingDareId, setDeletingDareId] = useState<string | null>(null);
 
   // Confirmation dialogs
-  const [statusConfirm, setStatusConfirm] = useState<StatusConfirm | null>(null);
-  const [deleteConfirmDareId, setDeleteConfirmDareId] = useState<string | null>(null);
+  const [statusConfirm, setStatusConfirm] = useState<StatusConfirm | null>(
+    null,
+  );
+  const [deleteConfirmDareId, setDeleteConfirmDareId] = useState<string | null>(
+    null,
+  );
 
   // Edit drawer
   const [editOpen, setEditOpen] = useState(false);
@@ -36,7 +46,9 @@ export function useGroupActions(groupId: string, group: GroupData | undefined) {
   const [editXp, setEditXp] = useState(10);
 
   const isOwner =
-    group?.members.some((m) => m.user.id === currentUser?.id && m.role === "OWNER") ?? false;
+    group?.members.some(
+      (m) => m.user.id === currentUser?.id && m.role === "OWNER",
+    ) ?? false;
 
   async function handleClaimDare(dareId: string) {
     setClaimingDareId(dareId);
@@ -44,7 +56,12 @@ export function useGroupActions(groupId: string, group: GroupData | undefined) {
       await claimDareMutation.mutateAsync(dareId);
       if (currentUser) {
         const newXp = currentUser.xp + 5;
-        updateUser({ ...currentUser, xp: newXp, level: computeLevel(newXp), rank: computeRank(newXp) });
+        updateUser({
+          ...currentUser,
+          xp: newXp,
+          level: computeLevel(newXp),
+          rank: computeRank(newXp),
+        });
       }
     } finally {
       setClaimingDareId(null);
@@ -62,7 +79,12 @@ export function useGroupActions(groupId: string, group: GroupData | undefined) {
             status === "COMPLETED"
               ? currentUser.xp + dare.xpReward
               : Math.max(0, currentUser.xp - dare.xpReward * 2);
-          updateUser({ ...currentUser, xp: newXp, level: computeLevel(newXp), rank: computeRank(newXp) });
+          updateUser({
+            ...currentUser,
+            xp: newXp,
+            level: computeLevel(newXp),
+            rank: computeRank(newXp),
+          });
         }
       }
     } finally {

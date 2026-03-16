@@ -1,7 +1,9 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+
 import { AlertCircle, RefreshCw } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface Props {
   children: ReactNode;
@@ -33,18 +35,18 @@ export class ErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="flex items-center justify-center p-8">
-          <Card className="bg-card/50 border-border/50 backdrop-blur-sm max-w-md w-full">
+          <Card className="bg-card/50 border-border/50 w-full max-w-md backdrop-blur-sm">
             <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
-              <AlertCircle className="size-10 text-destructive/60" />
+              <AlertCircle className="text-destructive/60 size-10" />
               <div>
-                <p className="font-semibold mb-1">Something went wrong</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="mb-1 font-semibold">Something went wrong</p>
+                <p className="text-muted-foreground text-sm">
                   {this.state.error?.message || "An unexpected error occurred."}
                 </p>
               </div>
               <Button
                 variant="outline"
-                className="gap-2 cursor-pointer"
+                className="cursor-pointer gap-2"
                 onClick={() => this.setState({ hasError: false, error: null })}
               >
                 <RefreshCw className="size-4" /> Try Again

@@ -1,19 +1,29 @@
-import { describe, it, expect } from "vitest";
-import { signUpSchema, signInSchema } from "./auth";
+import { describe, expect, it } from "vitest";
+
+import { signInSchema, signUpSchema } from "./auth";
 
 describe("signInSchema", () => {
   it("accepts valid email and password", () => {
-    const result = signInSchema.safeParse({ email: "user@test.com", password: "abc" });
+    const result = signInSchema.safeParse({
+      email: "user@test.com",
+      password: "abc",
+    });
     expect(result.success).toBe(true);
   });
 
   it("rejects invalid email", () => {
-    const result = signInSchema.safeParse({ email: "not-an-email", password: "abc" });
+    const result = signInSchema.safeParse({
+      email: "not-an-email",
+      password: "abc",
+    });
     expect(result.success).toBe(false);
   });
 
   it("rejects empty password", () => {
-    const result = signInSchema.safeParse({ email: "user@test.com", password: "" });
+    const result = signInSchema.safeParse({
+      email: "user@test.com",
+      password: "",
+    });
     expect(result.success).toBe(false);
   });
 });
@@ -37,7 +47,10 @@ describe("signUpSchema", () => {
   });
 
   it("rejects username longer than 20 chars", () => {
-    const result = signUpSchema.safeParse({ ...valid, username: "a".repeat(21) });
+    const result = signUpSchema.safeParse({
+      ...valid,
+      username: "a".repeat(21),
+    });
     expect(result.success).toBe(false);
   });
 
@@ -52,22 +65,37 @@ describe("signUpSchema", () => {
   });
 
   it("rejects password without uppercase letter", () => {
-    const result = signUpSchema.safeParse({ ...valid, password: "password1", confirmPassword: "password1" });
+    const result = signUpSchema.safeParse({
+      ...valid,
+      password: "password1",
+      confirmPassword: "password1",
+    });
     expect(result.success).toBe(false);
   });
 
   it("rejects password without number", () => {
-    const result = signUpSchema.safeParse({ ...valid, password: "Password", confirmPassword: "Password" });
+    const result = signUpSchema.safeParse({
+      ...valid,
+      password: "Password",
+      confirmPassword: "Password",
+    });
     expect(result.success).toBe(false);
   });
 
   it("rejects password shorter than 8 chars", () => {
-    const result = signUpSchema.safeParse({ ...valid, password: "Pass1", confirmPassword: "Pass1" });
+    const result = signUpSchema.safeParse({
+      ...valid,
+      password: "Pass1",
+      confirmPassword: "Pass1",
+    });
     expect(result.success).toBe(false);
   });
 
   it("rejects mismatched passwords", () => {
-    const result = signUpSchema.safeParse({ ...valid, confirmPassword: "Different1" });
+    const result = signUpSchema.safeParse({
+      ...valid,
+      confirmPassword: "Different1",
+    });
     expect(result.success).toBe(false);
   });
 

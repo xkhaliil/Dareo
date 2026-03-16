@@ -1,9 +1,6 @@
 import { useState } from "react";
-import { Plus, Loader2 } from "lucide-react";
+
 import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
-import { Label } from "@/shared/components/ui/label";
-import { Textarea } from "@/shared/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
@@ -12,6 +9,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/components/ui/dialog";
+import { Input } from "@/shared/components/ui/input";
+import { Label } from "@/shared/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -19,7 +18,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/components/ui/select";
+import { Textarea } from "@/shared/components/ui/textarea";
+import { Loader2, Plus } from "lucide-react";
+
 import { useCreateDare } from "@/hooks/use-group-service";
+
 import { XP_CAPS, XP_DEFAULTS } from "../constants";
 
 interface CreateDareDialogProps {
@@ -39,45 +42,80 @@ export default function CreateDareDialog({ groupId }: CreateDareDialogProps) {
     if (!title.trim() || !desc.trim()) return;
     setError(null);
     try {
-      await createDareMutation.mutateAsync({ title: title.trim(), description: desc.trim(), difficulty, xpReward: xp });
+      await createDareMutation.mutateAsync({
+        title: title.trim(),
+        description: desc.trim(),
+        difficulty,
+        xpReward: xp,
+      });
       setOpen(false);
-      setTitle(""); setDesc(""); setDifficulty("EASY"); setXp(10);
+      setTitle("");
+      setDesc("");
+      setDifficulty("EASY");
+      setXp(10);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Network error");
     }
   }
 
   return (
-    <Dialog open={open} onOpenChange={(o) => { setOpen(o); setError(null); }}>
+    <Dialog
+      open={open}
+      onOpenChange={(o) => {
+        setOpen(o);
+        setError(null);
+      }}
+    >
       <DialogTrigger asChild>
-        <Button size="sm" className="gap-2 cursor-pointer">
+        <Button size="sm" className="cursor-pointer gap-2">
           <Plus className="size-4" /> Create Dare
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create a new dare</DialogTitle>
-          <DialogDescription>Challenge your group members with a new dare.</DialogDescription>
+          <DialogDescription>
+            Challenge your group members with a new dare.
+          </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 pt-2">
           {error && (
-            <div className="rounded-md bg-destructive/10 border border-destructive/20 px-4 py-3 text-sm text-destructive">
+            <div className="bg-destructive/10 border-destructive/20 text-destructive rounded-md border px-4 py-3 text-sm">
               {error}
             </div>
           )}
           <div className="grid gap-2">
             <Label htmlFor="dare-title">Title</Label>
-            <Input id="dare-title" placeholder="Ice bucket challenge" value={title} onChange={(e) => setTitle(e.target.value)} />
+            <Input
+              id="dare-title"
+              placeholder="Ice bucket challenge"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="dare-desc">Description</Label>
-            <Textarea id="dare-desc" placeholder="Describe the dare in detail…" value={desc} onChange={(e) => setDesc(e.target.value)} rows={3} />
+            <Textarea
+              id="dare-desc"
+              placeholder="Describe the dare in detail…"
+              value={desc}
+              onChange={(e) => setDesc(e.target.value)}
+              rows={3}
+            />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
               <Label>Difficulty</Label>
-              <Select value={difficulty} onValueChange={(v) => { setDifficulty(v); setXp(XP_DEFAULTS[v] ?? 10); }}>
-                <SelectTrigger className="cursor-pointer"><SelectValue /></SelectTrigger>
+              <Select
+                value={difficulty}
+                onValueChange={(v) => {
+                  setDifficulty(v);
+                  setXp(XP_DEFAULTS[v] ?? 10);
+                }}
+              >
+                <SelectTrigger className="cursor-pointer">
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="EASY">Easy (max 25 XP)</SelectItem>
                   <SelectItem value="MEDIUM">Medium (max 50 XP)</SelectItem>
@@ -103,14 +141,20 @@ export default function CreateDareDialog({ groupId }: CreateDareDialogProps) {
             </div>
           </div>
           <Button
-            className="w-full gap-2 cursor-pointer"
-            disabled={createDareMutation.isPending || !title.trim() || !desc.trim()}
+            className="w-full cursor-pointer gap-2"
+            disabled={
+              createDareMutation.isPending || !title.trim() || !desc.trim()
+            }
             onClick={handleCreate}
           >
             {createDareMutation.isPending ? (
-              <><Loader2 className="size-4 animate-spin" /> Creating…</>
+              <>
+                <Loader2 className="size-4 animate-spin" /> Creating…
+              </>
             ) : (
-              <><Plus className="size-4" /> Create Dare</>
+              <>
+                <Plus className="size-4" /> Create Dare
+              </>
             )}
           </Button>
         </div>
