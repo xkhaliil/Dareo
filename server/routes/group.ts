@@ -375,11 +375,9 @@ router.patch(
       }
 
       if (dare.status !== "OPEN") {
-        res
-          .status(400)
-          .json({
-            error: "Cannot update a dare that is already completed or passed",
-          });
+        res.status(400).json({
+          error: "Cannot update a dare that is already completed or passed",
+        });
         return;
       }
 
@@ -448,11 +446,9 @@ router.delete(
       }
 
       if (dare.status !== "OPEN") {
-        res
-          .status(400)
-          .json({
-            error: "Cannot delete a dare that is already completed or passed",
-          });
+        res.status(400).json({
+          error: "Cannot delete a dare that is already completed or passed",
+        });
         return;
       }
 
@@ -462,11 +458,9 @@ router.delete(
       });
 
       if (dare.authorId !== req.userId && membership?.role !== "OWNER") {
-        res
-          .status(403)
-          .json({
-            error: "Only the dare creator or group owner can delete it",
-          });
+        res.status(403).json({
+          error: "Only the dare creator or group owner can delete it",
+        });
         return;
       }
 
@@ -516,12 +510,9 @@ router.patch(
 
       // Only the author or the assigned user can change the status
       if (dare.authorId !== req.userId && dare.assignedToId !== req.userId) {
-        res
-          .status(403)
-          .json({
-            error:
-              "Only the dare creator or assigned user can change the status",
-          });
+        res.status(403).json({
+          error: "Only the dare creator or assigned user can change the status",
+        });
         return;
       }
 
