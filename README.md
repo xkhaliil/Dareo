@@ -354,60 +354,112 @@ Forms validated by **Zod** → `useSignIn()`/`useSignUp()` mutation → Express 
 
 ## 📁 Project Structure
 
+The frontend follows **domain-based (feature) organisation**. Each feature owns its page, components (modlets), and hooks. Cross-cutting code lives in `src/shared/`.
+
 ```
 dareo/
+├── .github/
+│   └── workflows/
+│       └── ci.yml                  # CI: lint → typecheck → test on every PR
 ├── prisma/
 │   └── schema.prisma              # Database schema (models, enums, relations)
 ├── server/
-│   ├── index.ts                    # Express server entry point (port binding)
-│   ├── app.ts                      # Express app config (CORS, middleware, routes)
-│   ├── db.ts                       # Prisma client setup with pg adapter
+│   ├── index.ts                    # Express server entry point
+│   ├── app.ts                      # CORS, middleware, route registration
+│   ├── db.ts                       # Prisma client with pg adapter
 │   ├── uploadthing.ts              # File upload route handler
 │   └── routes/
-│       ├── auth.ts                 # POST /sign-up, /sign-in — JWT auth
-│       ├── group.ts                # CRUD groups, dares, claiming, status
-│       └── user.ts                 # PATCH profile updates
+│       ├── auth.ts                 # POST /sign-up, /sign-in
+│       ├── group.ts                # Groups, dares, claim/complete/delete
+│       └── user.ts                 # PATCH profile
 ├── src/
-│   ├── main.tsx                    # Entry: QueryClientProvider, Router, Suspense, ErrorBoundary
+│   ├── main.tsx                    # App entry — providers, router, routes
 │   ├── App.tsx                     # Landing page (redirects if authenticated)
-│   ├── components/
-│   │   ├── navbar.tsx              # Navigation bar (auth-aware, XP badge)
-│   │   ├── error-boundary.tsx      # React ErrorBoundary with styled fallback
-│   │   └── ui/                     # 47 shadcn/ui components (Radix UI primitives)
+│   │
+│   ├── features/                   # Domain-based feature modules
+│   │   ├── auth/
+│   │   │   ├── sign-in-page.tsx    # Thin orchestrator
+│   │   │   ├── sign-up-page.tsx    # Thin orchestrator
+│   │   │   └── components/
+│   │   │       ├── sign-in-form.tsx
+│   │   │       ├── sign-up-form.tsx
+│   │   │       ├── auth-navbar.tsx
+│   │   │       └── avatar-upload.tsx   # Reused in profile feature
+│   │   ├── game/
+│   │   │   ├── game-page.tsx       # Dashboard orchestrator
+│   │   │   └── components/
+│   │   │       ├── stats-row.tsx
+│   │   │       ├── group-card.tsx
+│   │   │       ├── create-group-dialog.tsx
+│   │   │       └── join-group-dialog.tsx
+│   │   ├── group/
+│   │   │   ├── group-page.tsx      # Group detail orchestrator
+│   │   │   ├── constants.ts        # Difficulty colours, XP caps, role icons
+│   │   │   ├── hooks/
+│   │   │   │   └── use-group-actions.ts  # Claim/complete/delete + XP side-effects
+│   │   │   └── components/
+│   │   │       ├── group-header.tsx
+│   │   │       ├── member-list.tsx
+│   │   │       ├── dare-list.tsx
+│   │   │       ├── dare-card.tsx
+│   │   │       ├── create-dare-dialog.tsx
+│   │   │       ├── edit-dare-drawer.tsx
+│   │   │       ├── dare-status-dialog.tsx
+│   │   │       └── delete-dare-dialog.tsx
+│   │   └── profile/
+│   │       ├── profile-page.tsx    # Profile orchestrator
+│   │       ├── hooks/
+│   │       │   └── use-profile-save.ts  # Avatar upload + profile patch logic
+│   │       └── components/
+│   │           ├── profile-header.tsx
+│   │           ├── profile-stats.tsx
+│   │           └── account-details.tsx
+│   │
+│   ├── shared/                     # Cross-cutting, domain-agnostic code
+│   │   ├── components/
+│   │   │   ├── navbar.tsx          # Auth-aware nav with XP badge
+│   │   │   ├── error-boundary.tsx  # App-level error fallback
+│   │   │   ├── page-background.tsx # Animated gradient backdrop
+│   │   │   ├── page-footer.tsx     # Shared footer
+│   │   │   └── ui/                 # 47 shadcn/ui primitives (Radix-based)
+│   │   ├── hooks/
+│   │   │   └── use-mobile.ts       # Viewport breakpoint hook
+│   │   ├── lib/
+│   │   │   ├── api.ts              # apiFetch<T>(), ApiError, API_URL
+│   │   │   ├── auth.ts             # Zod schemas + inferred types
+│   │   │   ├── xp.ts               # computeLevel(), computeRank()
+│   │   │   ├── utils.ts            # cn() Tailwind merge helper
+│   │   │   └── uploadthing.ts      # UploadThing client hook
+│   │   └── types/
+│   │       └── index.ts            # Barrel re-export of all domain types
+│   │
+│   ├── services/                   # Pure async API functions (no React)
+│   │   ├── auth-api.ts             # signIn(), signUp()
+│   │   ├── group-api.ts            # fetchGroups(), createDare(), claimDare(), etc.
+│   │   └── user-api.ts             # updateProfile()
+│   ├── hooks/                      # TanStack Query service hooks
+│   │   ├── use-auth-service.ts     # useSignIn(), useSignUp()
+│   │   ├── use-group-service.ts    # useGroups(), useCreateDare(), etc.
+│   │   └── use-user-service.ts     # useUpdateProfile()
 │   ├── stores/
-│   │   └── auth-store.ts           # Zustand global auth state (user, token, login/logout)
+│   │   └── auth-store.ts           # Zustand auth state (user, token, login/logout)
 │   ├── context/
-│   │   └── auth-context.tsx        # Thin wrapper re-exporting from Zustand store
-│   ├── services/
-│   │   ├── auth-api.ts             # Standalone API fns: signIn(), signUp()
-│   │   ├── group-api.ts            # Standalone API fns: fetchGroups(), createDare(), etc.
-│   │   └── user-api.ts             # Standalone API fns: updateProfile()
-│   ├── hooks/
-│   │   ├── use-auth-service.ts     # TanStack Query mutations: useSignIn(), useSignUp()
-│   │   ├── use-group-service.ts    # TanStack Query hooks: useGroups(), useCreateDare(), etc.
-│   │   ├── use-user-service.ts     # TanStack Query mutation: useUpdateProfile()
-│   │   └── use-mobile.ts           # Mobile breakpoint detection hook
-│   ├── lib/
-│   │   ├── api.ts                  # apiFetch<T>(), ApiError class, API_URL config
-│   │   ├── auth.ts                 # Zod validation schemas (signUp, signIn)
-│   │   ├── utils.ts                # Tailwind class merging utility (cn)
-│   │   ├── xp.ts                   # Shared XP/level/rank calculation helpers
-│   │   └── uploadthing.ts          # UploadThing React hook
-│   ├── pages/
-│   │   ├── game.tsx                # Dashboard — list/create/join groups
-│   │   ├── group.tsx               # Group detail — members, dares, CRUD actions
-│   │   ├── profile.tsx             # User profile — avatar, stats, editing
-│   │   ├── sign-in.tsx             # Sign-in form (React Hook Form + Zod)
-│   │   └── sign-up.tsx             # Sign-up form with avatar upload
+│   │   └── auth-context.tsx        # useAuth() — thin re-export of Zustand store
 │   └── test/
-│       └── setup.ts                # Vitest test setup (jest-dom matchers)
-├── generated/
-│   └── prisma/                     # Auto-generated Prisma client & types
-├── vercel.json                     # Vercel deployment config (SPA rewrites)
+│       └── setup.ts                # Vitest + jest-dom setup
+├── vercel.json                     # SPA rewrite rules
 └── .env                            # Environment variables (not committed)
 ```
 
----
+### Architecture layers
+
+| Layer | Location | Rule |
+|---|---|---|
+| **API functions** | `services/*-api.ts` | Pure async, no React imports |
+| **Service hooks** | `hooks/use-*-service.ts` | TanStack Query wrappers only |
+| **Business hooks** | `features/*/hooks/` | Side-effects, derived state, no JSX |
+| **Components** | `features/*/components/` | Pure rendering, props in / events out |
+| **Page orchestrators** | `features/*/*-page.tsx` | Wires hooks to components, no logic |
 
 ## 🚀 Getting Started
 
