@@ -9,7 +9,7 @@ import {
 import jwt from "jsonwebtoken";
 
 import type { Rank } from "../../generated/prisma/enums.js";
-import { computeLevel, computeRank } from "../../src/lib/xp.js";
+import { computeLevel, computeRank } from "../../src/shared/lib/xp.js";
 import prisma from "../db.js";
 
 const router = Router();

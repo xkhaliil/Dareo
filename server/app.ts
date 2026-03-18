@@ -16,7 +16,11 @@ app.get("/health", (req, res) => {
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://dareo.vercel.app"],
+    origin: [
+      "http://localhost:5173",
+      "https://dareo.vercel.app",
+      "https://xkhaliil.github.io/Dareo/",
+    ],
     credentials: true,
   }),
 );
