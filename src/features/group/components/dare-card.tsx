@@ -1,14 +1,3 @@
-import type { GroupDare } from "@/services/group-api";
-import { Badge } from "@/shared/components/ui/badge";
-import { Button } from "@/shared/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/shared/components/ui/dropdown-menu";
-import { Separator } from "@/shared/components/ui/separator";
 import {
   CheckCircle2,
   Hand,
@@ -19,6 +8,18 @@ import {
   Trash2,
   XCircle,
 } from "lucide-react";
+
+import type { GroupDare } from "@/shared/services/group-api";
+import { Badge } from "@/shared/components/ui/badge";
+import { Button } from "@/shared/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/shared/components/ui/dropdown-menu";
+import { Separator } from "@/shared/components/ui/separator";
 
 import { DIFFICULTY_COLORS } from "../constants";
 

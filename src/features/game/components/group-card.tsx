@@ -1,11 +1,12 @@
 import { useState } from "react";
 
-import type { GroupPreview } from "@/services/group-api";
+import { Check, Copy, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+import type { GroupPreview } from "@/shared/services/group-api";
 import { Avatar, AvatarFallback } from "@/shared/components/ui/avatar";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
-import { Check, Copy, Users } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 interface GroupCardProps {
   group: GroupPreview;

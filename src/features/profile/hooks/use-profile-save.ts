@@ -1,9 +1,8 @@
 import { useState } from "react";
 
 import { useUploadThing } from "@/shared/lib/uploadthing";
-import type { AuthUser } from "@/stores/auth-store";
-
-import { useUpdateProfile } from "@/hooks/use-user-service";
+import type { AuthUser } from "@/shared/stores/auth-store";
+import { useUpdateProfile } from "@/shared/hooks/use-user-service";
 
 interface UseProfileSaveOptions {
   user: AuthUser;

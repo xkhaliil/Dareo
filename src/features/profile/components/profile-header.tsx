@@ -1,4 +1,6 @@
-import AvatarUpload from "@/features/auth/components/avatar-upload";
+import { Pencil } from "lucide-react";
+
+import type { AuthUser } from "@/shared/stores/auth-store";
 import {
   Avatar,
   AvatarFallback,
@@ -7,8 +9,8 @@ import {
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
-import type { AuthUser } from "@/stores/auth-store";
-import { Pencil } from "lucide-react";
+
+import AvatarUpload from "@/features/auth/components/avatar-upload";
 
 const RANK_COLORS: Record<string, string> = {
   ROOKIE: "bg-zinc-500/10 text-zinc-400",

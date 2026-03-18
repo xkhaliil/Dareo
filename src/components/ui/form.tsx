@@ -1,8 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 import * as React from "react";
 
-import type { Label as LabelPrimitive } from "radix-ui";
-import { Slot } from "radix-ui";
+import { Label } from "@/components/ui/label";
+import { Slot, type Label as LabelPrimitive } from "radix-ui";
 import {
   Controller,
   FormProvider,
@@ -14,8 +14,6 @@ import {
 } from "react-hook-form";
 
 import { cn } from "@/lib/utils";
-
-import { Label } from "@/components/ui/label";
 
 const Form = FormProvider;
 

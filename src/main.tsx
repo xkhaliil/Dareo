@@ -9,8 +9,10 @@ import "./index.css";
 
 import { Loader2 } from "lucide-react";
 
+import { AuthProvider, useAuth } from "@/shared/context/auth-context";
+import { ThemeProvider } from "@/shared/context/theme-context";
+
 import App from "./App.tsx";
-import { AuthProvider, useAuth } from "./context/auth-context";
 import SignInPage from "./features/auth/sign-in-page.tsx";
 import SignUpPage from "./features/auth/sign-up-page.tsx";
 import GamePage from "./features/game/game-page.tsx";
@@ -43,44 +45,46 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <AuthProvider>
-          <ErrorBoundary>
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-                <Route path="/" element={<App />} />
-                <Route path="/sign-in" element={<SignInPage />} />
-                <Route path="/sign-up" element={<SignUpPage />} />
-                <Route
-                  path="/game"
-                  element={
-                    <ProtectedRoute>
-                      <GamePage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/group/:id"
-                  element={
-                    <ProtectedRoute>
-                      <GroupPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/profile"
-                  element={
-                    <ProtectedRoute>
-                      <ProfilePage />
-                    </ProtectedRoute>
-                  }
-                />
-              </Routes>
-            </Suspense>
-          </ErrorBoundary>
-        </AuthProvider>
-      </BrowserRouter>
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <AuthProvider>
+            <ErrorBoundary>
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+                  <Route path="/" element={<App />} />
+                  <Route path="/sign-in" element={<SignInPage />} />
+                  <Route path="/sign-up" element={<SignUpPage />} />
+                  <Route
+                    path="/game"
+                    element={
+                      <ProtectedRoute>
+                        <GamePage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/group/:id"
+                    element={
+                      <ProtectedRoute>
+                        <GroupPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/profile"
+                    element={
+                      <ProtectedRoute>
+                        <ProfilePage />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Routes>
+              </Suspense>
+            </ErrorBoundary>
+          </AuthProvider>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </ThemeProvider>
   </StrictMode>,
 );

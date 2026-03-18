@@ -1,5 +1,9 @@
 import { useState } from "react";
 
+import { Loader2, LogIn } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+import { useJoinGroup } from "@/shared/hooks/use-group-service";
 import { Button } from "@/shared/components/ui/button";
 import {
   Dialog,
@@ -11,10 +15,6 @@ import {
 } from "@/shared/components/ui/dialog";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
-import { Loader2, LogIn } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-
-import { useJoinGroup } from "@/hooks/use-group-service";
 
 export default function JoinGroupDialog() {
   const navigate = useNavigate();

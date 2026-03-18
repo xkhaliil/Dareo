@@ -1,6 +1,4 @@
-import { useState } from "react";
-
-import { useAuth } from "@/context/auth-context";
+import { useAuth } from "@/shared/context/auth-context";
 import Navbar from "@/shared/components/navbar";
 import PageBackground from "@/shared/components/page-background";
 import PageFooter from "@/shared/components/page-footer";
@@ -8,44 +6,14 @@ import PageFooter from "@/shared/components/page-footer";
 import AccountDetails from "./components/account-details";
 import ProfileHeader from "./components/profile-header";
 import ProfileStats from "./components/profile-stats";
-import { useProfileSave } from "./hooks/use-profile-save";
+import { useProfileEdit } from "./hooks/use-profile-edit";
 
 export default function ProfilePage() {
   const { user } = useAuth();
-  const [editing, setEditing] = useState(false);
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
-  const { save, error, setError, isSaving } = useProfileSave({
-    user: user!,
-    username,
-    email,
-    avatarFile,
-    onSuccess: () => setEditing(false),
-  });
+  const edit = useProfileEdit(user!);
 
   if (!user) return null;
-
-  function startEditing() {
-    setUsername(user!.username);
-    setEmail(user!.email);
-    setAvatarPreview(null);
-    setAvatarFile(null);
-    setError(null);
-    setEditing(true);
-  }
-
-  function cancelEditing() {
-    setEditing(false);
-    setError(null);
-  }
-
-  function handleAvatarChange(file: File, previewUrl: string) {
-    setAvatarFile(file);
-    setAvatarPreview(previewUrl);
-  }
 
   return (
     <div className="bg-background flex min-h-screen flex-col">
@@ -55,23 +23,23 @@ export default function ProfilePage() {
         <div className="mx-auto max-w-2xl">
           <ProfileHeader
             user={user}
-            editing={editing}
-            avatarPreview={avatarPreview}
-            onAvatarChange={handleAvatarChange}
-            onStartEditing={startEditing}
+            editing={edit.editing}
+            avatarPreview={edit.avatarPreview}
+            onAvatarChange={edit.handleAvatarChange}
+            onStartEditing={edit.startEditing}
           />
           <ProfileStats user={user} />
           <AccountDetails
             user={user}
-            editing={editing}
-            username={username}
-            onUsernameChange={setUsername}
-            email={email}
-            onEmailChange={setEmail}
-            error={error}
-            isSaving={isSaving}
-            onSave={save}
-            onCancel={cancelEditing}
+            editing={edit.editing}
+            username={edit.username}
+            onUsernameChange={edit.onUsernameChange}
+            email={edit.email}
+            onEmailChange={edit.onEmailChange}
+            error={edit.error}
+            isSaving={edit.isSaving}
+            onSave={edit.save}
+            onCancel={edit.cancelEditing}
           />
         </div>
       </main>

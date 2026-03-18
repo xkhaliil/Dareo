@@ -296,21 +296,26 @@ classDiagram
 
 ## 🏗️ Architecture & Design
 
-### Layered Architecture
+### Domain-Based Architecture
 
-The app follows a **4-layer architecture**: Pages → Service Hooks → API Functions → `apiFetch()`.
+The app uses **feature/domain-based organisation** — not layer-based. Each feature owns all its own code. Cross-cutting code lives exclusively in `src/shared/`.
 
-- **`lib/api.ts`** — Centralized `apiFetch<T>()` with typed `ApiError` on non-2xx responses
-- **`services/*-api.ts`** — Pure async functions (no React imports) — testable and reusable
-- **`hooks/use-*-service.ts`** — TanStack Query wrappers adding caching, loading states, and cache invalidation
+Data flows: Pages → Service Hooks → API Functions → `apiFetch()`
+
+- **`shared/lib/api.ts`** — Centralized `apiFetch<T>()` with typed `ApiError` on non-2xx responses
+- **`shared/services/*-api.ts`** — Pure async functions (no React imports) — testable and reusable
+- **`shared/hooks/use-*-service.ts`** — TanStack Query wrappers adding caching, loading states, and cache invalidation
 - **Pages** — Consume hooks directly, no manual fetch logic
 
 ### State Management
 
-| Kind             | Tool                                          | Manages                                                          |
-| ---------------- | --------------------------------------------- | ---------------------------------------------------------------- |
-| **Client state** | **Zustand** (`stores/auth-store.ts`)          | Auth (user, token, login/logout) — persisted to `localStorage`   |
-| **Server state** | **TanStack Query** (`hooks/use-*-service.ts`) | Groups, dares, members — cached 30s, auto-refetches on mutations |
+| Kind               | Tool                                                   | Manages                                                                              |
+| ------------------ | ------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| **Root context**   | **ThemeProvider** (`shared/context/theme-context.tsx`) | Dark/light theme — at root so every page, including pre-auth, can toggle             |
+| **Root context**   | **AuthProvider** (`shared/context/auth-context.tsx`)   | Auth state bridged from Zustand — single API for all consumers                       |
+| **Scoped context** | **GroupProvider** (`features/group/context/`)          | Group UI state (edit drawer, dialogs) — scoped to GroupPage only, preventing leakage |
+| **Client state**   | **Zustand** (`shared/stores/auth-store.ts`)            | Auth (user, token, login/logout) — persisted to `localStorage`                       |
+| **Server state**   | **TanStack Query** (`shared/hooks/use-*-service.ts`)   | Groups, dares, members — cached 30s, auto-refetches on mutations                     |
 
 ### Error Handling
 
@@ -329,7 +334,7 @@ The app follows a **4-layer architecture**: Pages → Service Hooks → API Func
 | `/group/:id`          | Group detail | 🔒 Protected                               |
 | `/profile`            | User profile | 🔒 Protected                               |
 
-Protected routes redirect to `/sign-in` via `<Navigate replace />`. Provider hierarchy: `StrictMode → QueryClientProvider → BrowserRouter → AuthProvider → ErrorBoundary → Suspense → Routes`.
+Protected routes redirect to `/sign-in` via `<Navigate replace />`. Provider hierarchy: `StrictMode → ThemeProvider → QueryClientProvider → BrowserRouter → AuthProvider → ErrorBoundary → Suspense → Routes` (ThemeProvider and AuthProvider implementations live in `shared/context/`).
 
 ### Authentication
 
@@ -360,9 +365,10 @@ The frontend follows **domain-based (feature) organisation**. Each feature owns 
 dareo/
 ├── .github/
 │   └── workflows/
-│       └── ci.yml                  # CI: lint → typecheck → test on every PR
+│       ├── ci.yml                  # CI: lint → prettier → typecheck → test on every PR
+│       └── cd.yml                  # CD: build → deploy to GitHub Pages on push to main
 ├── prisma/
-│   └── schema.prisma              # Database schema (models, enums, relations)
+│   └── schema.prisma               # Database schema (models, enums, relations)
 ├── server/
 │   ├── index.ts                    # Express server entry point
 │   ├── app.ts                      # CORS, middleware, route registration
@@ -376,27 +382,37 @@ dareo/
 │   ├── main.tsx                    # App entry — providers, router, routes
 │   ├── App.tsx                     # Landing page (redirects if authenticated)
 │   │
-│   ├── features/                   # Domain-based feature modules
+│   ├── features/                   # Domain-based feature modules (NOT layer-based)
 │   │   ├── auth/
-│   │   │   ├── sign-in-page.tsx    # Thin orchestrator
-│   │   │   ├── sign-up-page.tsx    # Thin orchestrator
+│   │   │   ├── sign-in-page.tsx        # Thin orchestrator modlet
+│   │   │   ├── sign-in-page.test.tsx
+│   │   │   ├── sign-up-page.tsx        # Thin orchestrator modlet
+│   │   │   ├── auth.test.tsx
 │   │   │   └── components/
 │   │   │       ├── sign-in-form.tsx
 │   │   │       ├── sign-up-form.tsx
 │   │   │       ├── auth-navbar.tsx
-│   │   │       └── avatar-upload.tsx   # Reused in profile feature
+│   │   │       ├── avatar-upload.tsx
+│   │   │       └── auth-components.test.tsx
 │   │   ├── game/
-│   │   │   ├── game-page.tsx       # Dashboard orchestrator
+│   │   │   ├── game-page.tsx           # Dashboard orchestrator modlet
+│   │   │   ├── game.test.tsx
 │   │   │   └── components/
 │   │   │       ├── stats-row.tsx
 │   │   │       ├── group-card.tsx
 │   │   │       ├── create-group-dialog.tsx
 │   │   │       └── join-group-dialog.tsx
 │   │   ├── group/
-│   │   │   ├── group-page.tsx      # Group detail orchestrator
-│   │   │   ├── constants.ts        # Difficulty colours, XP caps, role icons
+│   │   │   ├── group-page.tsx          # Group detail orchestrator modlet
+│   │   │   ├── group.test.tsx
+│   │   │   ├── constants.ts            # Difficulty colours, XP caps, role icons
+│   │   │   ├── constants.test.ts
+│   │   │   ├── context/
+│   │   │   │   ├── group-context.tsx   # Scoped context — dialog state (GroupPage only)
+│   │   │   │   └── group-context.test.tsx
 │   │   │   ├── hooks/
-│   │   │   │   └── use-group-actions.ts  # Claim/complete/delete + XP side-effects
+│   │   │   │   ├── use-group-actions.ts    # Business logic: claim/complete/delete + XP
+│   │   │   │   └── use-group-actions.test.ts
 │   │   │   └── components/
 │   │   │       ├── group-header.tsx
 │   │   │       ├── member-list.tsx
@@ -407,44 +423,62 @@ dareo/
 │   │   │       ├── dare-status-dialog.tsx
 │   │   │       └── delete-dare-dialog.tsx
 │   │   └── profile/
-│   │       ├── profile-page.tsx    # Profile orchestrator
+│   │       ├── profile-page.tsx        # Profile orchestrator modlet
+│   │       ├── profile.test.tsx
 │   │       ├── hooks/
-│   │       │   └── use-profile-save.ts  # Avatar upload + profile patch logic
+│   │       │   ├── use-profile-edit.ts   # Edit state logic
+│   │       │   └── use-profile-save.ts   # Avatar upload + profile patch
 │   │       └── components/
 │   │           ├── profile-header.tsx
 │   │           ├── profile-stats.tsx
 │   │           └── account-details.tsx
 │   │
-│   ├── shared/                     # Cross-cutting, domain-agnostic code
+│   ├── shared/                     # All cross-cutting, domain-agnostic code
 │   │   ├── components/
-│   │   │   ├── navbar.tsx          # Auth-aware nav with XP badge
-│   │   │   ├── error-boundary.tsx  # App-level error fallback
-│   │   │   ├── page-background.tsx # Animated gradient backdrop
-│   │   │   ├── page-footer.tsx     # Shared footer
-│   │   │   └── ui/                 # 47 shadcn/ui primitives (Radix-based)
+│   │   │   ├── navbar.tsx              # Auth-aware nav with XP badge
+│   │   │   ├── navbar.test.tsx
+│   │   │   ├── error-boundary.tsx      # App-level error fallback
+│   │   │   ├── page-background.tsx     # Animated gradient backdrop
+│   │   │   ├── page-footer.tsx         # Shared footer
+│   │   │   ├── shared-components.test.tsx
+│   │   │   └── ui/                     # 47 shadcn/ui primitives (Radix-based)
+│   │   ├── context/
+│   │   │   ├── auth-context.tsx        # Root context — bridges Zustand → React Context
+│   │   │   ├── auth-context.test.tsx
+│   │   │   ├── theme-context.tsx       # Root context — dark/light theme
+│   │   │   └── theme-context.test.tsx
 │   │   ├── hooks/
-│   │   │   └── use-mobile.ts       # Viewport breakpoint hook
+│   │   │   ├── use-mobile.ts           # Viewport breakpoint hook
+│   │   │   ├── use-mobile.test.ts
+│   │   │   ├── use-auth-service.ts     # useSignIn(), useSignUp()
+│   │   │   ├── use-group-service.ts    # useGroups(), useCreateDare(), etc.
+│   │   │   ├── use-user-service.ts     # useUpdateProfile()
+│   │   │   └── service-hooks.test.tsx
 │   │   ├── lib/
-│   │   │   ├── api.ts              # apiFetch<T>(), ApiError, API_URL
-│   │   │   ├── auth.ts             # Zod schemas + inferred types
-│   │   │   ├── xp.ts               # computeLevel(), computeRank()
-│   │   │   ├── utils.ts            # cn() Tailwind merge helper
-│   │   │   └── uploadthing.ts      # UploadThing client hook
+│   │   │   ├── api.ts                  # apiFetch<T>(), ApiError, API_URL
+│   │   │   ├── api.test.ts
+│   │   │   ├── auth.ts                 # Zod schemas + inferred types
+│   │   │   ├── xp.ts                   # computeLevel(), computeRank()
+│   │   │   ├── utils.ts                # cn() Tailwind merge helper
+│   │   │   ├── uploadthing.ts          # UploadThing client hook
+│   │   │   └── shared-lib.test.ts
+│   │   ├── services/
+│   │   │   ├── auth-api.ts             # signIn(), signUp()
+│   │   │   ├── group-api.ts            # fetchGroups(), createDare(), claimDare(), etc.
+│   │   │   ├── user-api.ts             # updateProfile()
+│   │   │   └── services.test.ts
+│   │   ├── stores/
+│   │   │   ├── auth-store.ts           # Zustand auth state (user, token, login/logout)
+│   │   │   └── auth-store.test.ts
 │   │   └── types/
-│   │       └── index.ts            # Barrel re-export of all domain types
+│   │       └── index.ts                # Barrel re-export of all domain types
 │   │
-│   ├── services/                   # Pure async API functions (no React)
-│   │   ├── auth-api.ts             # signIn(), signUp()
-│   │   ├── group-api.ts            # fetchGroups(), createDare(), claimDare(), etc.
-│   │   └── user-api.ts             # updateProfile()
-│   ├── hooks/                      # TanStack Query service hooks
-│   │   ├── use-auth-service.ts     # useSignIn(), useSignUp()
-│   │   ├── use-group-service.ts    # useGroups(), useCreateDare(), etc.
-│   │   └── use-user-service.ts     # useUpdateProfile()
-│   ├── stores/
-│   │   └── auth-store.ts           # Zustand auth state (user, token, login/logout)
-│   ├── context/
-│   │   └── auth-context.tsx        # useAuth() — thin re-export of Zustand store
+│   ├── lib/                        # Thin barrels for shadcn compatibility (@/lib/utils)
+│   │   ├── utils.ts  →  shared/lib/utils.ts
+│   │   ├── api.ts    →  shared/lib/api.ts
+│   │   ├── auth.ts   →  shared/lib/auth.ts
+│   │   ├── xp.ts     →  shared/lib/xp.ts
+│   │   └── uploadthing.ts → shared/lib/uploadthing.ts
 │   └── test/
 │       └── setup.ts                # Vitest + jest-dom setup
 ├── vercel.json                     # SPA rewrite rules
@@ -453,13 +487,15 @@ dareo/
 
 ### Architecture layers
 
-| Layer                  | Location                 | Rule                                  |
-| ---------------------- | ------------------------ | ------------------------------------- |
-| **API functions**      | `services/*-api.ts`      | Pure async, no React imports          |
-| **Service hooks**      | `hooks/use-*-service.ts` | TanStack Query wrappers only          |
-| **Business hooks**     | `features/*/hooks/`      | Side-effects, derived state, no JSX   |
-| **Components**         | `features/*/components/` | Pure rendering, props in / events out |
-| **Page orchestrators** | `features/*/*-page.tsx`  | Wires hooks to components, no logic   |
+| Layer                  | Location                        | Rule                                  |
+| ---------------------- | ------------------------------- | ------------------------------------- |
+| **API functions**      | `shared/services/*-api.ts`      | Pure async, no React imports          |
+| **Service hooks**      | `shared/hooks/use-*-service.ts` | TanStack Query wrappers only          |
+| **Business hooks**     | `features/*/hooks/`             | Side-effects, derived state, no JSX   |
+| **Scoped context**     | `features/*/context/`           | UI state shared within one feature    |
+| **Root context**       | `shared/context/`               | App-wide state, mounted once at root  |
+| **Components**         | `features/*/components/`        | Pure rendering, props in / events out |
+| **Page orchestrators** | `features/*/*-page.tsx`         | Wires hooks to components, no logic   |
 
 ## 🚀 Getting Started
 
@@ -484,6 +520,7 @@ npm install
 #    JWT_SECRET="your-secret-key"
 #    UPLOADTHING_TOKEN="your-uploadthing-token"
 #    VITE_API_URL="http://localhost:3001"
+#    VITE_BASE_PATH="/"   # set to "/<repo-name>/" for GitHub Pages
 
 # 4. Push the database schema
 npx prisma db push
@@ -537,17 +574,17 @@ npm run test:watch
 
 ### Test Coverage
 
-| Test File                           | Type                        | Tests | Description                                                          |
-| ----------------------------------- | --------------------------- | ----- | -------------------------------------------------------------------- |
-| `src/lib/xp.test.ts`                | **Comprehensive unit**      | 23    | `computeLevel` & `computeRank` — all boundary values and edge cases  |
-| `src/lib/auth.test.ts`              | **Comprehensive unit**      | 13    | Zod schemas — username, email, password rules, mismatched passwords  |
-| `src/components/navbar.test.tsx`    | **Comprehensive component** | 10    | Authenticated/unauthenticated states, links, XP badge, avatar        |
-| `src/pages/sign-in.test.tsx`        | **Interactive component**   | 9     | Typing, password toggle, form submission, server/network errors      |
-| `src/lib/utils.test.ts`             | Unit                        | 5     | `cn()` class merging, deduplication, edge cases                      |
-| `src/pages/smoke.test.tsx`          | Smoke                       | 3     | SignUpPage, ProfilePage, GamePage render without crashing            |
-| `src/context/auth-context.test.tsx` | Integration                 | 3     | AuthProvider defaults, useAuth without provider, login updates state |
-| `src/hooks/use-mobile.test.ts`      | Unit                        | 2     | `useIsMobile` hook — desktop and mobile viewports                    |
-| `src/App.test.tsx`                  | Smoke                       | 1     | Landing page renders                                                 |
+| Test File                                  | Type                        | Tests | Description                                                          |
+| ------------------------------------------ | --------------------------- | ----- | -------------------------------------------------------------------- |
+| `src/lib/xp.test.ts`                       | **Comprehensive unit**      | 23    | `computeLevel` & `computeRank` — all boundary values and edge cases  |
+| `src/lib/auth.test.ts`                     | **Comprehensive unit**      | 13    | Zod schemas — username, email, password rules, mismatched passwords  |
+| `src/components/navbar.test.tsx`           | **Comprehensive component** | 10    | Authenticated/unauthenticated states, links, XP badge, avatar        |
+| `src/pages/sign-in.test.tsx`               | **Interactive component**   | 9     | Typing, password toggle, form submission, server/network errors      |
+| `src/lib/utils.test.ts`                    | Unit                        | 5     | `cn()` class merging, deduplication, edge cases                      |
+| `src/pages/smoke.test.tsx`                 | Smoke                       | 3     | SignUpPage, ProfilePage, GamePage render without crashing            |
+| `src/shared/context/auth-context.test.tsx` | Integration                 | 3     | AuthProvider defaults, useAuth without provider, login updates state |
+| `src/shared/hooks/use-mobile.test.ts`      | Unit                        | 2     | `useIsMobile` hook — desktop and mobile viewports                    |
+| `src/App.test.tsx`                         | Smoke                       | 1     | Landing page renders                                                 |
 
 **Total: 69 tests across 9 test files — all passing ✅**
 

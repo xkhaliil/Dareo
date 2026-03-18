@@ -1,3 +1,6 @@
+import { Loader2 } from "lucide-react";
+
+import { useEditDare } from "@/shared/hooks/use-group-service";
 import { Button } from "@/shared/components/ui/button";
 import {
   Drawer,
@@ -17,9 +20,6 @@ import {
   SelectValue,
 } from "@/shared/components/ui/select";
 import { Textarea } from "@/shared/components/ui/textarea";
-import { Loader2 } from "lucide-react";
-
-import { useEditDare } from "@/hooks/use-group-service";
 
 import { XP_CAPS } from "../constants";
 

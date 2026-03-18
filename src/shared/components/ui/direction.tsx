@@ -1,24 +1,2 @@
-/* eslint-disable react-refresh/only-export-components */
-"use client";
-
-import * as React from "react";
-
-import { Direction } from "radix-ui";
-
-function DirectionProvider({
-  dir,
-  direction,
-  children,
-}: React.ComponentProps<typeof Direction.DirectionProvider> & {
-  direction?: React.ComponentProps<typeof Direction.DirectionProvider>["dir"];
-}) {
-  return (
-    <Direction.DirectionProvider dir={direction ?? dir}>
-      {children}
-    </Direction.DirectionProvider>
-  );
-}
-
-const useDirection = Direction.useDirection;
-
-export { DirectionProvider, useDirection };
+// Re-export from canonical location — implementation lives in src/components/ui/
+export * from "@/components/ui/direction";

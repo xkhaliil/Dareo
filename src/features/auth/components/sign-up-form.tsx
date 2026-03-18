@@ -1,5 +1,13 @@
 import { useState } from "react";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowRight, Dice5, Eye, EyeOff, Loader2 } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+
+import { signUpSchema, type SignUpValues } from "@/shared/lib/auth";
+import { useUploadThing } from "@/shared/lib/uploadthing";
+import { useSignUp } from "@/shared/hooks/use-auth-service";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -10,14 +18,6 @@ import {
 } from "@/shared/components/ui/card";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
-import { signUpSchema, type SignUpValues } from "@/shared/lib/auth";
-import { useUploadThing } from "@/shared/lib/uploadthing";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Dice5, Eye, EyeOff, Loader2 } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-
-import { useSignUp } from "@/hooks/use-auth-service";
 
 import AvatarUpload from "./avatar-upload";
 

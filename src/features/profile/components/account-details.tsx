@@ -1,3 +1,6 @@
+import { Calendar, Check, Loader2, Mail, User, X } from "lucide-react";
+
+import type { AuthUser } from "@/shared/stores/auth-store";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -8,8 +11,6 @@ import {
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
 import { Separator } from "@/shared/components/ui/separator";
-import type { AuthUser } from "@/stores/auth-store";
-import { Calendar, Check, Loader2, Mail, User, X } from "lucide-react";
 
 interface AccountDetailsProps {
   user: AuthUser;

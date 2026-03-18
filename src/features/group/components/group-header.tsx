@@ -1,9 +1,10 @@
 import { useState } from "react";
 
-import type { GroupData } from "@/services/group-api";
+import { Check, Copy, Users } from "lucide-react";
+
+import type { GroupData } from "@/shared/services/group-api";
 import { Button } from "@/shared/components/ui/button";
 import { Card, CardContent } from "@/shared/components/ui/card";
-import { Check, Copy, Users } from "lucide-react";
 
 interface GroupHeaderProps {
   group: GroupData;

@@ -1,4 +1,6 @@
-import type { GroupMember } from "@/services/group-api";
+import { Users } from "lucide-react";
+
+import type { GroupMember } from "@/shared/services/group-api";
 import {
   Avatar,
   AvatarFallback,
@@ -12,7 +14,6 @@ import {
   CardTitle,
 } from "@/shared/components/ui/card";
 import { Separator } from "@/shared/components/ui/separator";
-import { Users } from "lucide-react";
 
 import { RANK_COLORS, ROLE_ICONS } from "../constants";
 

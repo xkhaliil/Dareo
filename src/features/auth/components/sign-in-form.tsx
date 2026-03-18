@@ -1,5 +1,12 @@
 import { useState } from "react";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowRight, Dice5, Eye, EyeOff } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+
+import { signInSchema, type SignInValues } from "@/shared/lib/auth";
+import { useSignIn } from "@/shared/hooks/use-auth-service";
 import { Button } from "@/shared/components/ui/button";
 import {
   Card,
@@ -10,13 +17,6 @@ import {
 } from "@/shared/components/ui/card";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
-import { signInSchema, type SignInValues } from "@/shared/lib/auth";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Dice5, Eye, EyeOff } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-
-import { useSignIn } from "@/hooks/use-auth-service";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);

@@ -1,11 +1,12 @@
-import type { GroupDare } from "@/services/group-api";
+import { Dice5 } from "lucide-react";
+
+import type { GroupDare } from "@/shared/services/group-api";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@/shared/components/ui/card";
-import { Dice5 } from "lucide-react";
 
 import CreateDareDialog from "./create-dare-dialog";
 import DareCard from "./dare-card";

@@ -1,54 +1,61 @@
 import { useState } from "react";
 
-import { useAuth } from "@/context/auth-context";
-import type { GroupDare, GroupData } from "@/services/group-api";
 import { computeLevel, computeRank } from "@/shared/lib/xp";
-
+import { useAuth } from "@/shared/context/auth-context";
+import type { GroupData } from "@/shared/services/group-api";
 import {
   useClaimDare,
   useCompleteDare,
   useDeleteDare,
-} from "@/hooks/use-group-service";
+  useEditDare,
+} from "@/shared/hooks/use-group-service";
+
+import { useGroupContext } from "../context/group-context";
 
 type DareStatus = "COMPLETED" | "PASSED" | "FAILED";
 
-interface StatusConfirm {
-  dareId: string;
-  status: DareStatus;
-}
-
+/**
+ * useGroupActions — business logic hook for the group page.
+ *
+ * Rendering/UI state (which dialog is open, edit field values) is owned by
+ * GroupContext. This hook owns only mutation logic, loading trackers, and
+ * XP side-effects — keeping business logic and rendering concerns separate.
+ */
 export function useGroupActions(groupId: string, group: GroupData | undefined) {
   const { user: currentUser, updateUser } = useAuth();
 
+  // ── GroupContext: UI state lives there, we pull actions from it ───────────
+  const {
+    openEditDare,
+    closeEditDare,
+    editState,
+    setEditTitle,
+    setEditDesc,
+    setEditDifficulty,
+    setEditXp,
+    statusConfirm,
+    setStatusConfirm,
+    deleteConfirmDareId,
+    setDeleteConfirmDareId,
+  } = useGroupContext();
+
+  // ── Mutations ────────────────────────────────────────────────────────────
   const claimDareMutation = useClaimDare(groupId);
   const completeDareMutation = useCompleteDare(groupId);
   const deleteDareMutation = useDeleteDare(groupId);
+  const editDareMutation = useEditDare(groupId);
 
-  // Loading state per dare
+  // ── Per-dare loading trackers ─────────────────────────────────────────────
   const [claimingDareId, setClaimingDareId] = useState<string | null>(null);
   const [completingDareId, setCompletingDareId] = useState<string | null>(null);
   const [deletingDareId, setDeletingDareId] = useState<string | null>(null);
-
-  // Confirmation dialogs
-  const [statusConfirm, setStatusConfirm] = useState<StatusConfirm | null>(
-    null,
-  );
-  const [deleteConfirmDareId, setDeleteConfirmDareId] = useState<string | null>(
-    null,
-  );
-
-  // Edit drawer
-  const [editOpen, setEditOpen] = useState(false);
-  const [editDareId, setEditDareId] = useState<string | null>(null);
-  const [editTitle, setEditTitle] = useState("");
-  const [editDesc, setEditDesc] = useState("");
-  const [editDifficulty, setEditDifficulty] = useState("EASY");
-  const [editXp, setEditXp] = useState(10);
 
   const isOwner =
     group?.members.some(
       (m) => m.user.id === currentUser?.id && m.role === "OWNER",
     ) ?? false;
+
+  // ── Handlers ─────────────────────────────────────────────────────────────
 
   async function handleClaimDare(dareId: string) {
     setClaimingDareId(dareId);
@@ -103,13 +110,16 @@ export function useGroupActions(groupId: string, group: GroupData | undefined) {
     }
   }
 
-  function openEditDare(dare: GroupDare) {
-    setEditDareId(dare.id);
-    setEditTitle(dare.title);
-    setEditDesc(dare.description);
-    setEditDifficulty(dare.difficulty);
-    setEditXp(dare.xpReward);
-    setEditOpen(true);
+  async function handleEditDare() {
+    if (!editState) return;
+    await editDareMutation.mutateAsync({
+      dareId: editState.dareId,
+      title: editState.title,
+      description: editState.description,
+      difficulty: editState.difficulty,
+      xpReward: editState.xpReward,
+    });
+    closeEditDare();
   }
 
   return {
@@ -134,17 +144,18 @@ export function useGroupActions(groupId: string, group: GroupData | undefined) {
     handleDeleteDare,
 
     // Edit
-    editOpen,
-    setEditOpen,
-    editDareId,
-    editTitle,
-    setEditTitle,
-    editDesc,
-    setEditDesc,
-    editDifficulty,
-    setEditDifficulty,
-    editXp,
-    setEditXp,
     openEditDare,
+    setEditTitle,
+    setEditDesc,
+    setEditDifficulty,
+    setEditXp,
+    handleEditDare,
+    isEditSaving: editDareMutation.isPending,
   };
 }
+
+// Re-export for convenience
+export { useGroupContext } from "../context/group-context";
+
+// Type of the object returned by useGroupActions — used by GroupContent modlet
+export type GroupActions = ReturnType<typeof useGroupActions>;

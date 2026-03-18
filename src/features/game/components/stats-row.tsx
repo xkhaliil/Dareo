@@ -1,6 +1,7 @@
-import { Card, CardContent } from "@/shared/components/ui/card";
-import type { AuthUser } from "@/stores/auth-store";
 import { Trophy, Users, Zap } from "lucide-react";
+
+import type { AuthUser } from "@/shared/stores/auth-store";
+import { Card, CardContent } from "@/shared/components/ui/card";
 
 interface StatsRowProps {
   user: AuthUser;
