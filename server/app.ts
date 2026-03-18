@@ -11,7 +11,7 @@ import { uploadRouter } from "./uploadthing.js";
 
 const app = express();
 app.get("/health", (req, res) => {
-  res.json({ status: "ok" });
+  res.json({ status: "backend server of dareo is healthy" });
 });
 
 app.use(
