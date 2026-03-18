@@ -19,7 +19,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://dareo.vercel.app",
-      "https://xkhaliil.github.io/Dareo/",
+      "https://xkhaliil.github.io",
     ],
     credentials: true,
   }),
